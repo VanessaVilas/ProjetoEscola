@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdlib.h>
+#include "Escola.h"
 
 int verifica_numero(char CARACTER);
 int verifica_ano_bisexto(int iAno);
