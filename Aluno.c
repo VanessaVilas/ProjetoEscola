@@ -6,9 +6,9 @@
 #include "Escola.h"
 #include "Aluno.h"
 
-int inserirAluno(Aluno** inicio);
-int excluirAluno(Aluno** inicio);
-void listarAlunos(Aluno** inicio);
+int inserirAluno(Aluno** inicioAluno);
+int excluirAluno(Aluno** inicioAluno);
+void listarAlunos(Aluno** inicioAluno);
 int menuAluno();
 
 int geraMatricula(){
@@ -36,7 +36,6 @@ void mainAluno(Aluno** inicioListaAluno){
 	int sair = FALSE;
 
 	while (!sair){
-    
 	    opcao = menuAluno();
 	    
 	    switch(opcao){
@@ -44,10 +43,10 @@ void mainAluno(Aluno** inicioListaAluno){
 	        sair = TRUE;
 	        break;
 	      }
-	      case 1: {
+	      case 1:{
 	      	retorno = inserirAluno(inicioListaAluno);
 
-	      	if (retorno == SUCESSO_CADASTRO){ 
+	      	if(retorno == SUCESSO_CADASTRO){ 
 	      		printf("Aluno cadastrado com sucesso\n");
 	      	}else{
 	      		switch(retorno){
@@ -70,9 +69,9 @@ void mainAluno(Aluno** inicioListaAluno){
 	      	}  
 	      	break;
 	      }
-	      case 2: {
+	      case 2:{
 	      	retorno = excluirAluno(inicioListaAluno);
-	      	if (retorno == SUCESSO_EXCLUSAO){ 
+	      	if(retorno == SUCESSO_EXCLUSAO){ 
 	      		printf("Aluno excluido com sucesso\n");
 	      	}else{
 	      		switch(retorno){
@@ -91,7 +90,7 @@ void mainAluno(Aluno** inicioListaAluno){
 	      	}  
 	      	break;
 	      }
-	      case 3: {
+	      case 3:{
 	      	listarAlunos(inicioListaAluno);
 	      	break;	
 	      }
@@ -102,13 +101,13 @@ void mainAluno(Aluno** inicioListaAluno){
 	}
 }
 
-void inserirAlunoNaLista(Aluno** inicio, Aluno* novoAluno){
+void inserirAlunoNaLista(Aluno** inicioAluno, Aluno* novoAluno){
     Aluno *atual;
     
-    if (*inicio == NULL)
-        *inicio = novoAluno;
+    if(*inicioAluno == NULL)
+        *inicioAluno = novoAluno;
     else{
-        atual = *inicio;
+        atual = *inicioAluno;
 
         while(atual->prox != NULL)
             atual = atual->prox;
@@ -119,7 +118,7 @@ void inserirAlunoNaLista(Aluno** inicio, Aluno* novoAluno){
     novoAluno->prox = NULL;
 }
 
-int inserirAluno(Aluno** inicio){
+int inserirAluno(Aluno** inicioAluno){
     int retorno = SUCESSO_CADASTRO;
 
     Aluno* novoAluno = (Aluno *)malloc(sizeof(Aluno));
@@ -130,14 +129,14 @@ int inserirAluno(Aluno** inicio){
 	printf("Digite o nome: ");
     fgets(novoAluno->nome, 50, stdin);
     size_t ln = strlen(novoAluno->nome) - 1;
-    if (novoAluno->nome[ln] == '\n')
+    if(novoAluno->nome[ln] == '\n')
         novoAluno->nome[ln] = '\0';
     
     printf("Digite o sexo: ");
     scanf("%c", &novoAluno->sexo);
     
     novoAluno->sexo = toupper(novoAluno->sexo);
-    if (novoAluno->sexo != 'M' && novoAluno->sexo != 'F') {
+    if(novoAluno->sexo != 'M' && novoAluno->sexo != 'F') {
         retorno = ERRO_CADASTRO_SEXO;
     }else{
 	    char data[11];
@@ -146,21 +145,20 @@ int inserirAluno(Aluno** inicio){
 	    getchar();
 
 	    int dataValida = validar_data(novoAluno->data_nascimento.dataCompleta);
-	    if (dataValida == 0){
+	    if(dataValida == FALSE){
 	        retorno = ERRO_DATA_INVALIDA;
 	    }else{
-		    
 		    printf("Digite o CPF: ");
 		    fgets(novoAluno->cpf, 15, stdin); 
 		    ln = strlen(novoAluno->cpf) - 1; 
-		    if (novoAluno->cpf[ln] == '\n')
+		    if(novoAluno->cpf[ln] == '\n')
 		        novoAluno->cpf[ln] = '\0';
 	    }
     }
 
-    if (retorno == SUCESSO_CADASTRO){
+    if(retorno == SUCESSO_CADASTRO){
     	novoAluno->matricula = geraMatricula();
-    	inserirAlunoNaLista(inicio, novoAluno);
+    	inserirAlunoNaLista(inicioAluno, novoAluno);
     	return SUCESSO_CADASTRO;
     }else{
     	free(novoAluno);
@@ -168,55 +166,51 @@ int inserirAluno(Aluno** inicio){
     }
 }
 
-int excluirAlunoNaLista(Aluno** inicio, int matricula){
-	if (*inicio == NULL)
+int excluirAlunoNaLista(Aluno** inicioAluno, int matricula){
+	if(*inicioAluno == NULL)
 		return LISTA_VAZIA;
 
-	Aluno* anterior = *inicio;
-	Aluno* atual = *inicio;
+	Aluno* anterior = *inicioAluno;
+	Aluno* atual = *inicioAluno;
 	Aluno* proximo = atual->prox;
-	int achou = 0;
+	int achou = FALSE;
 
 	while(atual != NULL){
-		if (atual->matricula == matricula){
-			achou = 1;
+		if(atual->matricula == matricula){
+			achou = TRUE;
 			break;
 		}
 		anterior = atual;
 		atual = proximo;
-		if (atual != NULL)
+		if(atual != NULL)
 			proximo = atual->prox;
 	}
 
-	if (achou){
-		if (atual == *inicio)
-			*inicio = proximo;
+	if(achou){
+		if(atual == *inicioAluno)
+			*inicioAluno = proximo;
 		else
 			anterior->prox = atual->prox;
 		free(atual);
 		return SUCESSO_EXCLUSAO;
 	}else
 		return NAO_ENCONTRADO;
-
 }
 
-int excluirAluno(Aluno** inicio){
+int excluirAluno(Aluno** inicioAluno){
 	int matricula;
 	printf("Digite a matrícula: ");    
     scanf("%d", &matricula);
     getchar();
 
-	return excluirAlunoNaLista(inicio, matricula);
-	
+	return excluirAlunoNaLista(inicioAluno, matricula);
 }
 
-
-void listarAlunos(Aluno** inicio){
+void listarAlunos(Aluno** inicioAluno){
     int i;
-    Aluno* alunoAtual = *inicio;
-    if (*inicio == NULL){
+    Aluno* alunoAtual = *inicioAluno;
+    if(*inicioAluno == NULL){
         printf("Lista Vazia\n");
-        
     }else{
     	printf("\n### Alunos Cadastrados ####\n");
         do{
@@ -228,15 +222,13 @@ void listarAlunos(Aluno** inicio){
             printf("CPF: %s\n", alunoAtual->cpf);
             
             alunoAtual = alunoAtual->prox;
-
         }while (alunoAtual != NULL);
     }    
     printf("-----\n\n");
 }
 
-void liberarListaAluno(Aluno* inicio){
-
-	Aluno* atual = inicio;
+void liberarListaAluno(Aluno* inicioAluno){
+	Aluno* atual = inicioAluno;
 	Aluno* tmp;
 
 	while(atual != NULL){

@@ -2,9 +2,9 @@
 
 #include "Escola.h"
 #include "Aluno.h"
+#include "Disciplina.h"
 
 int menuGeral(){
-
 	int opcao;
 
 	printf("#### Digite a opção: ####\n");
@@ -16,29 +16,33 @@ int menuGeral(){
 	scanf("%d",&opcao);
 
 	return opcao;
-
 }
 
-void finalizarEscola(Aluno* inicio){
-	liberarListaAluno(inicio);
+void finalizarEscola(Aluno* inicioAluno, Disciplina* inicioDisciplina){
+	liberarListaAluno(inicioAluno); 
+	liberarListaDisciplina(inicioDisciplina);
 }
+
+
 
 int main(){
 	Aluno aluno; 
 	Aluno* inicioListaAluno = NULL; 
 
+	Disciplina disciplina; 
+	Disciplina* inicioListaDisciplina = NULL;
+
 	int opcao, retorno;
-	int sair = 0;
+	int sair = FALSE;
 
 	while (!sair){
-    
 	    opcao = menuGeral();
 	    
 	    switch(opcao){
 	      case 0:{
 	        printf("Finalizando Escola\n");
-	        finalizarEscola(inicioListaAluno);
-	        sair = 1;
+	        finalizarEscola(inicioListaAluno, inicioListaDisciplina);
+	        sair = TRUE;
 	        break;
 	      }
 	      case 1: {
@@ -48,10 +52,14 @@ int main(){
 	      case 2: {
 	      	printf("listar os alunos\n");
 	      	break;
-	      }default:{
+	      }
+		  case 3: {
+			mainDisciplina(&inicioListaDisciplina);
+	      	break;
+		  }
+		  default:{
 	      	printf("opcao inválida\n");
 	      }
 	  	}
 	}
-
 }

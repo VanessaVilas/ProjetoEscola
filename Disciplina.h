@@ -1,10 +1,10 @@
 typedef struct dados_disciplina{
     
   char nome[50];
-  char codigo[7];
+  int codigo;
   int semestre;
   char professor[50];
-  struct dados_aluno *prox;
+  struct dados_disciplina *prox;
     
 } Disciplina;
 
