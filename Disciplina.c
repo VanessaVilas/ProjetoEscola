@@ -7,6 +7,7 @@
 #include "Disciplina.h"
 
 int inserirDisciplina(Disciplina** inicioDisciplina);
+int atualizarDisciplina(Disciplina** inicioDisciplina);
 int excluirDisciplina(Disciplina** inicioDisciplina);
 void listarDisciplinas(Disciplina** inicioDisciplina);
 int menuDisciplina();
@@ -24,8 +25,9 @@ int menuDisciplina(){
 	printf("#### Digite a opção: ####\n");
 	printf("0 - Voltar para o menu geral\n");
 	printf("1 - Inserir Disciplina\n");
-	printf("2 - Excluir Disciplina\n");
-	printf("3 - Listar Disciplina\n");
+	printf("2 - Atualizar Disciplina\n");
+	printf("3 - Excluir Disciplina\n");
+	printf("4 - Listar Disciplina\n");
 	scanf("%d",&opcao);
 
 	return opcao;
@@ -65,7 +67,36 @@ void mainDisciplina(Disciplina** inicioListaDisciplina){
 	      	}  
 	      	break;
 	      }
-	      case 2: {
+		  case 2: {
+			retorno = atualizarDisciplina(inicioListaDisciplina);
+	      	if(retorno == SUCESSO_ATUALIZACAO){ 
+	      		printf("Disciplina atualizada com sucesso\n");
+	      	}else{
+	      		switch(retorno){
+	      			case LISTA_VAZIA:{
+	      				printf("Lista Vazia.\n");
+	      				break;
+	      			}
+					case ERRO_CADASTRO_SEMESTRE:{
+	      				printf("Semestre Inválido. Deve ser maior que 0.\n");
+	      				break;
+	      			}
+                    case ERRO_CADASTRO_PROFESSOR:{
+	      				printf("Professor não cadastrado.\n");
+	      				break;
+	      			}
+	      			case NAO_ENCONTRADO:{
+	      				printf("Não foi encontrada a disciplina com o código digitado.\n");
+	      				break;
+	      			}
+	      			default:{
+	      				printf("Erro desconhecido.\n");
+	      			}
+	      		}
+	      	}  
+	      	break;
+		  }
+	      case 3: {
 	      	retorno = excluirDisciplina(inicioListaDisciplina);
 	      	if(retorno == SUCESSO_EXCLUSAO){ 
 	      		printf("Disciplina excluida com sucesso\n");
@@ -76,7 +107,7 @@ void mainDisciplina(Disciplina** inicioListaDisciplina){
 	      				break;
 	      			}
 	      			case NAO_ENCONTRADO:{
-	      				printf("Não foi encontrada a Disciplina com o código digitado.\n");
+	      				printf("Não foi encontrada a disciplina com o código digitado.\n");
 	      				break;
 	      			}
 	      			default:{
@@ -86,7 +117,7 @@ void mainDisciplina(Disciplina** inicioListaDisciplina){
 	      	}  
 	      	break;
 	      }
-	      case 3: {
+	      case 4: {
 	      	listarDisciplinas(inicioListaDisciplina);
 	      	break;	
 	      }
@@ -150,6 +181,58 @@ int inserirDisciplina(Disciplina** inicioDisciplina){
     	free(novaDisciplina);
     	return retorno;
     }
+}
+
+int atualizarDisciplinaNaLista(Disciplina** inicioDisciplina, int codigo){
+	if(*inicioDisciplina == NULL)
+		return LISTA_VAZIA;
+
+	Disciplina* atual = *inicioDisciplina;
+	int achou = FALSE;
+
+	while(atual != NULL){
+		if(atual->codigo == codigo){
+			achou = TRUE;
+			break;
+		}
+		atual = atual->prox;
+	}
+
+	if(achou){
+		int retorno = SUCESSO_ATUALIZACAO;
+
+		printf("Digite o nome: ");
+		fgets(atual->nome, 50, stdin);
+		size_t ln = strlen(atual->nome) - 1;
+		if(atual->nome[ln] == '\n')
+			atual->nome[ln] = '\0';
+
+		printf("Digite o semestre: ");
+		scanf("%d", &atual->semestre);
+		getchar();
+
+		if(atual->semestre <= 0){
+			retorno = ERRO_CADASTRO_SEMESTRE;
+		}else{
+			printf("Digite o nome do professor: ");
+			fgets(atual->professor, 50, stdin); 
+			size_t ln = strlen(atual->professor) - 1;
+			if(atual->professor[ln] == '\n')
+				atual->professor[ln] = '\0';
+		}
+
+		return retorno;
+	}else
+		return NAO_ENCONTRADO;
+}
+
+int atualizarDisciplina(Disciplina** inicioDisciplina){
+	int codigo;
+	printf("Digite o código: ");    
+    scanf("%d", &codigo);
+    getchar();
+
+	return atualizarDisciplinaNaLista(inicioDisciplina, codigo);
 }
 
 int excluirDisciplinaNaLista(Disciplina** inicioDisciplina, int codigo){
