@@ -11,15 +11,13 @@ int excluirAluno(Aluno** inicio);
 void listarAlunos(Aluno** inicio);
 int menuAluno();
 
-int geraMatricula()
-{
+int geraMatricula(){
 	static int num = 0;
 	num++;
 	return num;
 }
 
 int menuAluno(){
-
 	int opcao;
 
 	printf("#### Módulo de Aluno ####\n");
@@ -31,9 +29,7 @@ int menuAluno(){
 	scanf("%d",&opcao);
 
 	return opcao;
-
 }
-
 
 void mainAluno(Aluno** inicioListaAluno){
 	int opcao, retorno;
@@ -66,7 +62,8 @@ void mainAluno(Aluno** inicioListaAluno){
 	      			case ERRO_DATA_INVALIDA:{
 	      				printf("Data Inválida.\n");
 	      				break;
-	      			}default:{
+	      			}
+					default:{
 	      				printf("Erro desconhecido.\n");
 	      			}
 	      		}
@@ -83,11 +80,11 @@ void mainAluno(Aluno** inicioListaAluno){
 	      				printf("Lista Vazia.\n");
 	      				break;
 	      			}
-	      			case NAO_ENCONTRADO:{
+					case NAO_ENCONTRADO:{
 	      				printf("Não foi encontrado o aluno com a matrícula digitada.\n");
 	      				break;
 	      			}
-	      			default:{
+					default:{
 	      				printf("Erro desconhecido.\n");
 	      			}
 	      		}
@@ -97,13 +94,12 @@ void mainAluno(Aluno** inicioListaAluno){
 	      case 3: {
 	      	listarAlunos(inicioListaAluno);
 	      	break;	
-	      }default:{
+	      }
+		  default:{
 	      	printf("opcao inválida\n");
 	      }
 	  	}
 	}
-
-
 }
 
 void inserirAlunoNaLista(Aluno** inicio, Aluno* novoAluno){
@@ -160,7 +156,6 @@ int inserirAluno(Aluno** inicio){
 		    if (novoAluno->cpf[ln] == '\n')
 		        novoAluno->cpf[ln] = '\0';
 	    }
-
     }
 
     if (retorno == SUCESSO_CADASTRO){
@@ -170,9 +165,7 @@ int inserirAluno(Aluno** inicio){
     }else{
     	free(novoAluno);
     	return retorno;
-
     }
-    
 }
 
 int excluirAlunoNaLista(Aluno** inicio, int matricula){
