@@ -11,7 +11,7 @@ int excluirProfessor(Professor** inicioProfessor);
 void listarProfessor(Professor** inicioProfessor);
 int menuProfessor();
 
-int geraMatricula(){
+int geraMatriculaProfessor(){
 	static int num = 0;
 	num++;
 	return num;
@@ -153,7 +153,7 @@ int inserirProfessor(Professor** inicioProfessor){
     }
 
     if(retorno == SUCESSO_CADASTRO){
-    	novoProfessor->matricula = geraMatricula();
+    	novoProfessor->matricula = geraMatriculaProfessor();
     	inserirProfessorNaLista(inicioProfessor, novoProfessor);
     	return SUCESSO_CADASTRO;
     }else{
