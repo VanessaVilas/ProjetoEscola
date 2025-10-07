@@ -50,10 +50,6 @@ void mainAluno(Aluno** inicioListaAluno){
 	      		printf("Aluno cadastrado com sucesso\n");
 	      	}else{
 	      		switch(retorno){
-	      			case ERRO_CADASTRO_MATRICULA:{
-	      				printf("Matrícula Inválida. Deve ser maior que 0.\n");
-	      				break;
-	      			}
 	      			case ERRO_CADASTRO_SEXO:{
 	      				printf("Sexo Inválido. Digite 'm' ou 'M' para Masculino ou 'f' ou 'F' para Feminino.\n");
 	      				break;

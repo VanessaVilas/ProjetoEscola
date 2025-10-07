@@ -2,6 +2,7 @@
 
 #include "Escola.h"
 #include "Aluno.h"
+#include "Professor.h"
 #include "Disciplina.h"
 
 int menuGeral(){
@@ -18,8 +19,9 @@ int menuGeral(){
 	return opcao;
 }
 
-void finalizarEscola(Aluno* inicioAluno, Disciplina* inicioDisciplina){
+void finalizarEscola(Aluno* inicioAluno, Professor* inicioProfessor, Disciplina* inicioDisciplina){
 	liberarListaAluno(inicioAluno); 
+	liberarListaProfessor(inicioProfessor);
 	liberarListaDisciplina(inicioDisciplina);
 }
 
@@ -32,6 +34,9 @@ int main(){
 	Disciplina disciplina; 
 	Disciplina* inicioListaDisciplina = NULL;
 
+	Professor professor; 
+	Professor* inicioListaProfessor = NULL;
+
 	int opcao, retorno;
 	int sair = FALSE;
 
@@ -41,7 +46,7 @@ int main(){
 	    switch(opcao){
 	      case 0:{
 	        printf("Finalizando Escola\n");
-	        finalizarEscola(inicioListaAluno, inicioListaDisciplina);
+	        finalizarEscola(inicioListaAluno, inicioListaProfessor, inicioListaDisciplina);
 	        sair = TRUE;
 	        break;
 	      }
@@ -50,7 +55,7 @@ int main(){
 	      	break;
 	      }
 	      case 2: {
-	      	printf("listar os alunos\n");
+	      	mainProfessor(&inicioListaProfessor);
 	      	break;
 	      }
 		  case 3: {
