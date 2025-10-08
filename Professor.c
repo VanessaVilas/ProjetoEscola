@@ -56,8 +56,8 @@ int validarCadastroProfessor(Professor* professor){
 int menuProfessor(){
 	int opcao;
 
-	printf("#### Módulo de Professor ####\n");
-	printf("#### Digite a opção: ####\n");
+	printf("**** Módulo de Professor ****\n");
+	printf("**** Digite a opção: ****\n");
 	printf("0 - Voltar para o menu geral\n");
 	printf("1 - Inserir Professor\n");
 	printf("2 - Atualizar Professor\n");
