@@ -18,6 +18,41 @@ int geraMatriculaProfessor(){
 	return num;
 }
 
+int validarCadastroProfessor(Professor* professor){
+	int retorno = SUCESSO_CADASTRO;
+	
+	printf("Digite o nome: ");
+    fgets(professor->nome, 50, stdin);
+    size_t ln = strlen(professor->nome) - 1;
+    if(professor->nome[ln] == '\n')
+        professor->nome[ln] = '\0';
+    
+    printf("Digite o sexo: ");
+    scanf("%c", &professor->sexo);
+    
+    professor->sexo = toupper(professor->sexo);
+    if(professor->sexo != 'M' && professor->sexo != 'F') {
+        retorno = ERRO_CADASTRO_SEXO;
+    }else{
+	    char data[11];
+	    printf("Digite a data de nascimento: ");
+	    scanf("%s", professor->data_nascimento.dataCompleta);
+	    getchar();
+
+	    int dataValida = validar_data(professor->data_nascimento.dataCompleta);
+	    if(dataValida == FALSE){
+	        retorno = ERRO_DATA_INVALIDA;
+	    }else{
+		    printf("Digite o CPF: ");
+		    fgets(professor->cpf, 15, stdin); 
+		    ln = strlen(professor->cpf) - 1; 
+		    if(professor->cpf[ln] == '\n')
+		        professor->cpf[ln] = '\0';
+	    }
+    }
+	return retorno;
+}
+
 int menuProfessor(){
 	int opcao;
 
@@ -146,42 +181,12 @@ void inserirProfessorNaLista(Professor** inicioProfessor, Professor* novoProfess
 }
 
 int inserirProfessor(Professor** inicioProfessor){
-    int retorno = SUCESSO_CADASTRO;
-
     Professor* novoProfessor = (Professor *)malloc(sizeof(Professor));
     
     printf("\n### Cadastro de Professor ###\n");
     getchar();
 
-	printf("Digite o nome: ");
-    fgets(novoProfessor->nome, 50, stdin);
-    size_t ln = strlen(novoProfessor->nome) - 1;
-    if(novoProfessor->nome[ln] == '\n')
-        novoProfessor->nome[ln] = '\0';
-    
-    printf("Digite o sexo: ");
-    scanf("%c", &novoProfessor->sexo);
-    
-    novoProfessor->sexo = toupper(novoProfessor->sexo);
-    if(novoProfessor->sexo != 'M' && novoProfessor->sexo != 'F') {
-        retorno = ERRO_CADASTRO_SEXO;
-    }else{
-	    char data[11];
-	    printf("Digite a data de nascimento: ");
-	    scanf("%s", novoProfessor->data_nascimento.dataCompleta);
-	    getchar();
-
-	    int dataValida = validar_data(novoProfessor->data_nascimento.dataCompleta);
-	    if(dataValida == FALSE){
-	        retorno = ERRO_DATA_INVALIDA;
-	    }else{
-		    printf("Digite o CPF: ");
-		    fgets(novoProfessor->cpf, 15, stdin); 
-		    ln = strlen(novoProfessor->cpf) - 1; 
-		    if(novoProfessor->cpf[ln] == '\n')
-		        novoProfessor->cpf[ln] = '\0';
-	    }
-    }
+	int retorno = validarCadastroProfessor(novoProfessor);
 
     if(retorno == SUCESSO_CADASTRO){
     	novoProfessor->matricula = geraMatriculaProfessor();
@@ -209,36 +214,17 @@ int atualizarProfessorNaLista(Professor** inicioProfessor, int matricula){
 	}
 
 	if(achou){
-		int retorno = SUCESSO_ATUALIZACAO;
+		printf("\n### Atualização de Professor ###\n");
 
-		printf("Digite o nome: ");
-		fgets(atual->nome, 50, stdin);
-		size_t ln = strlen(atual->nome) - 1;
-		if(atual->nome[ln] == '\n')
-			atual->nome[ln] = '\0';
-		
-		printf("Digite o sexo: ");
-		scanf("%c", &atual->sexo);
-		
-		atual->sexo = toupper(atual->sexo);
-		if(atual->sexo != 'M' && atual->sexo != 'F') {
-			retorno = ERRO_CADASTRO_SEXO;
-		}else{
-			char data[11];
-			printf("Digite a data de nascimento: ");
-			scanf("%s", atual->data_nascimento.dataCompleta);
-			getchar();
+		Professor tmp;
 
-			int dataValida = validar_data(atual->data_nascimento.dataCompleta);
-			if(dataValida == FALSE){
-				retorno = ERRO_DATA_INVALIDA;
-			}else{
-				printf("Digite o CPF: ");
-				fgets(atual->cpf, 15, stdin); 
-				ln = strlen(atual->cpf) - 1; 
-				if(atual->cpf[ln] == '\n')
-					atual->cpf[ln] = '\0';
-			}
+		int retorno = validarCadastroProfessor(&tmp);	
+
+		if(retorno == SUCESSO_CADASTRO){
+			strcpy(atual->nome, tmp.nome);
+        	atual->sexo = tmp.sexo;
+        	strcpy(atual->data_nascimento.dataCompleta, tmp.data_nascimento.dataCompleta);
+        	strcpy(atual->cpf, tmp.cpf);
 		}
 
 		return retorno;

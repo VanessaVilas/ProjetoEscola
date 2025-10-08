@@ -18,6 +18,31 @@ int geraCodigo(){
 	return num;
 }
 
+int validarCadastroDisciplina(Disciplina* disciplina){
+	int retorno = SUCESSO_CADASTRO;
+	
+	printf("Digite o nome: ");
+    fgets(disciplina->nome, 50, stdin);
+    size_t ln = strlen(disciplina->nome) - 1;
+    if(disciplina->nome[ln] == '\n')
+        disciplina->nome[ln] = '\0';
+
+    printf("Digite o semestre: ");
+    scanf("%d", &disciplina->semestre);
+	getchar();
+
+    if(disciplina->semestre <= 0){
+        retorno = ERRO_CADASTRO_SEMESTRE;
+    }else{
+        printf("Digite o nome do professor: ");
+        fgets(disciplina->professor, 50, stdin); 
+		size_t ln = strlen(disciplina->professor) - 1;
+    	if(disciplina->professor[ln] == '\n')
+        	disciplina->professor[ln] = '\0';
+    }
+	return retorno;
+}
+
 int menuDisciplina(){
 	int opcao;
 
@@ -146,33 +171,13 @@ void inserirDisciplinaNaLista(Disciplina** inicioDisciplina, Disciplina* novaDis
 }
 
 int inserirDisciplina(Disciplina** inicioDisciplina){
-    int retorno = SUCESSO_CADASTRO;
-
     Disciplina* novaDisciplina = (Disciplina *)malloc(sizeof(Disciplina));
     
     printf("\n### Cadastro de Disciplina ###\n");
     getchar();
 
-	printf("Digite o nome: ");
-    fgets(novaDisciplina->nome, 50, stdin);
-    size_t ln = strlen(novaDisciplina->nome) - 1;
-    if(novaDisciplina->nome[ln] == '\n')
-        novaDisciplina->nome[ln] = '\0';
-
-    printf("Digite o semestre: ");
-    scanf("%d", &novaDisciplina->semestre);
-	getchar();
-
-    if(novaDisciplina->semestre <= 0){
-        retorno = ERRO_CADASTRO_SEMESTRE;
-    }else{
-        printf("Digite o nome do professor: ");
-        fgets(novaDisciplina->professor, 50, stdin); 
-		size_t ln = strlen(novaDisciplina->professor) - 1;
-    	if(novaDisciplina->professor[ln] == '\n')
-        	novaDisciplina->professor[ln] = '\0';
-    }
-
+	int retorno = validarCadastroDisciplina(novaDisciplina);
+	
     if(retorno == SUCESSO_CADASTRO){
     	novaDisciplina->codigo = geraCodigo();
     	inserirDisciplinaNaLista(inicioDisciplina, novaDisciplina);
@@ -199,26 +204,16 @@ int atualizarDisciplinaNaLista(Disciplina** inicioDisciplina, int codigo){
 	}
 
 	if(achou){
-		int retorno = SUCESSO_ATUALIZACAO;
+		printf("\n### Atualização de Disciplina ###\n");
 
-		printf("Digite o nome: ");
-		fgets(atual->nome, 50, stdin);
-		size_t ln = strlen(atual->nome) - 1;
-		if(atual->nome[ln] == '\n')
-			atual->nome[ln] = '\0';
+		Disciplina tmp;
 
-		printf("Digite o semestre: ");
-		scanf("%d", &atual->semestre);
-		getchar();
+		int retorno = validarCadastroDisciplina(&tmp);	
 
-		if(atual->semestre <= 0){
-			retorno = ERRO_CADASTRO_SEMESTRE;
-		}else{
-			printf("Digite o nome do professor: ");
-			fgets(atual->professor, 50, stdin); 
-			size_t ln = strlen(atual->professor) - 1;
-			if(atual->professor[ln] == '\n')
-				atual->professor[ln] = '\0';
+		if(retorno == SUCESSO_CADASTRO){
+			strcpy(atual->nome, tmp.nome);
+        	atual->semestre = tmp.semestre;
+        	strcpy(atual->professor, tmp.professor);
 		}
 
 		return retorno;
