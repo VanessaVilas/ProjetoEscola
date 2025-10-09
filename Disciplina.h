@@ -8,5 +8,5 @@ typedef struct dados_disciplina{
     
 } Disciplina;
 
-void mainDisciplina(Disciplina** inicio);
+void mainDisciplina(Disciplina** inicio, Professor** inicioProfessor);
 void liberarListaDisciplina(Disciplina* inicio);

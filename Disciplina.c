@@ -4,10 +4,11 @@
 #include <ctype.h>
 
 #include "Escola.h"
+#include "Professor.h"
 #include "Disciplina.h"
 
-int inserirDisciplina(Disciplina** inicioDisciplina);
-int atualizarDisciplina(Disciplina** inicioDisciplina);
+int inserirDisciplina(Disciplina** inicioDisciplina, Professor** inicioListaProfessor);
+int atualizarDisciplina(Disciplina** inicioDisciplina, Professor** inicioListaProfessor);
 int excluirDisciplina(Disciplina** inicioDisciplina);
 void listarDisciplinas(Disciplina** inicioDisciplina);
 int menuDisciplina();
@@ -18,7 +19,7 @@ int geraCodigo(){
 	return num;
 }
 
-int validarCadastroDisciplina(Disciplina* disciplina){
+int validarCadastroDisciplina(Disciplina* disciplina, Professor** inicioProfessor){
 	int retorno = SUCESSO_CADASTRO;
 	
 	printf("Digite o nome: ");
@@ -34,11 +35,26 @@ int validarCadastroDisciplina(Disciplina* disciplina){
     if(disciplina->semestre <= 0){
         retorno = ERRO_CADASTRO_SEMESTRE;
     }else{
-        printf("Digite o nome do professor: ");
-        fgets(disciplina->professor, 50, stdin); 
-		size_t ln = strlen(disciplina->professor) - 1;
-    	if(disciplina->professor[ln] == '\n')
-        	disciplina->professor[ln] = '\0';
+		int matricula;
+		printf("Digite a matrícula do professor: ");    
+		scanf("%d", &matricula);
+		getchar();
+
+		Professor* atual = *inicioProfessor;
+		int achou = FALSE;
+
+		while(atual != NULL){
+			if(atual->matricula == matricula){
+				achou = TRUE;
+				break;
+			}
+			atual = atual->prox;
+		}
+
+		if(achou){
+			strcpy(disciplina->professor, atual->nome);
+		}else
+			return ERRO_CADASTRO_PROFESSOR;
     }
 	return retorno;
 }
@@ -58,7 +74,7 @@ int menuDisciplina(){
 	return opcao;
 }
 
-void mainDisciplina(Disciplina** inicioListaDisciplina){
+void mainDisciplina(Disciplina** inicioListaDisciplina, Professor** inicioListaProfessor){
 	int opcao, retorno;
 	int sair = FALSE;
 
@@ -71,7 +87,7 @@ void mainDisciplina(Disciplina** inicioListaDisciplina){
 	        break;
 	      }
 	      case 1:{
-	      	retorno = inserirDisciplina(inicioListaDisciplina);
+	      	retorno = inserirDisciplina(inicioListaDisciplina, inicioListaProfessor);
 
 	      	if(retorno == SUCESSO_CADASTRO){ 
 	      		printf("Disciplina cadastrada com sucesso\n");
@@ -93,7 +109,7 @@ void mainDisciplina(Disciplina** inicioListaDisciplina){
 	      	break;
 	      }
 		  case 2: {
-			retorno = atualizarDisciplina(inicioListaDisciplina);
+			retorno = atualizarDisciplina(inicioListaDisciplina, inicioListaProfessor);
 	      	if(retorno == SUCESSO_ATUALIZACAO){ 
 	      		printf("Disciplina atualizada com sucesso\n");
 	      	}else{
@@ -170,13 +186,13 @@ void inserirDisciplinaNaLista(Disciplina** inicioDisciplina, Disciplina* novaDis
     novaDisciplina->prox = NULL;
 }
 
-int inserirDisciplina(Disciplina** inicioDisciplina){
+int inserirDisciplina(Disciplina** inicioDisciplina, Professor** inicioListaProfessor){
     Disciplina* novaDisciplina = (Disciplina *)malloc(sizeof(Disciplina));
     
     printf("\n### Cadastro de Disciplina ###\n");
     getchar();
 
-	int retorno = validarCadastroDisciplina(novaDisciplina);
+	int retorno = validarCadastroDisciplina(novaDisciplina, inicioListaProfessor);
 	
     if(retorno == SUCESSO_CADASTRO){
     	novaDisciplina->codigo = geraCodigo();
@@ -188,7 +204,7 @@ int inserirDisciplina(Disciplina** inicioDisciplina){
     }
 }
 
-int atualizarDisciplinaNaLista(Disciplina** inicioDisciplina, int codigo){
+int atualizarDisciplinaNaLista(Disciplina** inicioDisciplina, int codigo, Professor** inicioListaProfessor){
 	if(*inicioDisciplina == NULL)
 		return LISTA_VAZIA;
 
@@ -208,7 +224,7 @@ int atualizarDisciplinaNaLista(Disciplina** inicioDisciplina, int codigo){
 
 		Disciplina tmp;
 
-		int retorno = validarCadastroDisciplina(&tmp);	
+		int retorno = validarCadastroDisciplina(&tmp, inicioListaProfessor);	
 
 		if(retorno == SUCESSO_CADASTRO){
 			strcpy(atual->nome, tmp.nome);
@@ -221,13 +237,13 @@ int atualizarDisciplinaNaLista(Disciplina** inicioDisciplina, int codigo){
 		return NAO_ENCONTRADO;
 }
 
-int atualizarDisciplina(Disciplina** inicioDisciplina){
+int atualizarDisciplina(Disciplina** inicioDisciplina, Professor** inicioListaProfessor){
 	int codigo;
 	printf("Digite o código: ");    
     scanf("%d", &codigo);
     getchar();
 
-	return atualizarDisciplinaNaLista(inicioDisciplina, codigo);
+	return atualizarDisciplinaNaLista(inicioDisciplina, codigo, inicioListaProfessor);
 }
 
 int excluirDisciplinaNaLista(Disciplina** inicioDisciplina, int codigo){
