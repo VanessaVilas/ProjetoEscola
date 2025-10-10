@@ -104,7 +104,7 @@ void mainProfessor(Professor** inicioListaProfessor){
 	      }
 		  case 2: {
 			retorno = atualizarProfessor(inicioListaProfessor);
-	      	if(retorno == SUCESSO_ATUALIZACAO){ 
+	      	if(retorno == SUCESSO_CADASTRO){ 
 	      		printf("Professor atualizado com sucesso\n");
 	      	}else{
 	      		switch(retorno){

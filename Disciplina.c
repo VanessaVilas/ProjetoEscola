@@ -4,6 +4,7 @@
 #include <ctype.h>
 
 #include "Escola.h"
+#include "Aluno.h"
 #include "Professor.h"
 #include "Disciplina.h"
 
@@ -11,6 +12,7 @@ int inserirDisciplina(Disciplina** inicioDisciplina, Professor** inicioListaProf
 int atualizarDisciplina(Disciplina** inicioDisciplina, Professor** inicioListaProfessor);
 int excluirDisciplina(Disciplina** inicioDisciplina);
 void listarDisciplinas(Disciplina** inicioDisciplina);
+int matricularAluno(Disciplina** inicioDisciplina, Aluno** inicioListaAluno);
 int menuDisciplina();
 
 int geraCodigo(){
@@ -69,12 +71,13 @@ int menuDisciplina(){
 	printf("2 - Atualizar Disciplina\n");
 	printf("3 - Excluir Disciplina\n");
 	printf("4 - Listar Disciplina\n");
+	printf("5 - Matricular Aluno\n");
 	scanf("%d",&opcao);
 
 	return opcao;
 }
 
-void mainDisciplina(Disciplina** inicioListaDisciplina, Professor** inicioListaProfessor){
+void mainDisciplina(Disciplina** inicioListaDisciplina, Professor** inicioListaProfessor, Aluno** inicioListaAluno){
 	int opcao, retorno;
 	int sair = FALSE;
 
@@ -110,7 +113,7 @@ void mainDisciplina(Disciplina** inicioListaDisciplina, Professor** inicioListaP
 	      }
 		  case 2: {
 			retorno = atualizarDisciplina(inicioListaDisciplina, inicioListaProfessor);
-	      	if(retorno == SUCESSO_ATUALIZACAO){ 
+	      	if(retorno == SUCESSO_CADASTRO){ 
 	      		printf("Disciplina atualizada com sucesso\n");
 	      	}else{
 	      		switch(retorno){
@@ -162,6 +165,31 @@ void mainDisciplina(Disciplina** inicioListaDisciplina, Professor** inicioListaP
 	      	listarDisciplinas(inicioListaDisciplina);
 	      	break;	
 	      }
+		  case 5: {
+	      	retorno = matricularAluno(inicioListaDisciplina, inicioListaAluno);
+	      	if(retorno == SUCESSO_MATRICULA){ 
+	      		printf("Aluno matriculado com sucesso\n");
+	      	}else{
+	      		switch(retorno){
+	      			case LISTA_VAZIA:{
+	      				printf("Lista Vazia.\n");
+	      				break;
+	      			}
+	      			case NAO_ENCONTRADO:{
+	      				printf("Não foi encontrada a disciplina com o código digitado.\n");
+	      				break;
+	      			}
+					case ERRO_CADASTRO_ALUNO:{
+	      				printf("Aluno não cadastrado.\n");
+	      				break;
+	      			}
+	      			default:{
+	      				printf("Erro desconhecido.\n");
+	      			}
+	      		}
+	      	}  
+	      	break;
+	      }
           default:{
 	      	printf("opcao inválida\n");
 	      }
@@ -196,6 +224,7 @@ int inserirDisciplina(Disciplina** inicioDisciplina, Professor** inicioListaProf
 	
     if(retorno == SUCESSO_CADASTRO){
     	novaDisciplina->codigo = geraCodigo();
+		novaDisciplina->qtdAlunos = 0;
     	inserirDisciplinaNaLista(inicioDisciplina, novaDisciplina);
     	return SUCESSO_CADASTRO;
     }else{
@@ -300,7 +329,12 @@ void listarDisciplinas(Disciplina** inicioDisciplina){
             printf("Nome: %s\n", DisciplinaAtual->nome);
             printf("Semestre: %d\n", DisciplinaAtual->semestre);
             printf("Professor: %s\n", DisciplinaAtual->professor);
-            
+
+			printf("\n### Alunos Matriculados ####\n");
+			for(int i = 0; i < DisciplinaAtual->qtdAlunos; i++){
+				printf("Aluno: %s\n", DisciplinaAtual->aluno[i]);
+			}
+
             DisciplinaAtual = DisciplinaAtual->prox;
         }while (DisciplinaAtual != NULL);
     }    
@@ -316,4 +350,58 @@ void liberarListaDisciplina(Disciplina* inicioDisciplina){
 		free(atual);
 		atual = tmp;
 	}
+}
+
+int matricularAlunoNaLista(Disciplina** inicioDisciplina, int codigo, Aluno** inicioAluno){
+	if(*inicioDisciplina == NULL)
+		return LISTA_VAZIA;
+
+	Disciplina* atualDisciplina = *inicioDisciplina;
+	int achou = FALSE;
+
+	while(atualDisciplina != NULL){
+		if(atualDisciplina->codigo == codigo){
+			achou = TRUE;
+			break;
+		}
+		atualDisciplina = atualDisciplina->prox;
+	}
+
+	if(achou){
+		Aluno* atualAluno = *inicioAluno;
+		int achou = FALSE;
+
+		int matricula;
+		printf("Digite a matrícula do aluno: ");    
+		scanf("%d", &matricula);
+		getchar();
+
+		while(atualAluno != NULL){
+			if(atualAluno->matricula == matricula){
+				achou = TRUE;
+				break;
+			}
+			atualAluno = atualAluno->prox;
+		}
+
+		if(achou){
+			strcpy(atualDisciplina->aluno[atualDisciplina->qtdAlunos], atualAluno->nome);
+			atualDisciplina->qtdAlunos++;
+
+			return SUCESSO_MATRICULA;
+		}else{
+			return ERRO_CADASTRO_ALUNO;
+		}
+	}else{
+		return NAO_ENCONTRADO;
+	}
+}
+
+int matricularAluno(Disciplina** inicioDisciplina, Aluno** inicioAluno){
+	int codigo;
+	printf("Digite o código da disciplina: ");    
+    scanf("%d", &codigo);
+    getchar();
+
+	return matricularAlunoNaLista(inicioDisciplina, codigo, inicioAluno);
 }
