@@ -28,16 +28,13 @@ void finalizarEscola(Aluno* inicioAluno, Professor* inicioProfessor, Disciplina*
 
 
 int main(){
-	Aluno aluno; 
 	Aluno* inicioListaAluno = NULL; 
 
-	Disciplina disciplina; 
 	Disciplina* inicioListaDisciplina = NULL;
 
-	Professor professor; 
 	Professor* inicioListaProfessor = NULL;
 
-	int opcao, retorno;
+	int opcao;
 	int sair = FALSE;
 
 	while (!sair){
@@ -67,4 +64,5 @@ int main(){
 	      }
 	  	}
 	}
+	return 0;
 }
