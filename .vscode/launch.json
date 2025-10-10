@@ -5,7 +5,12 @@
       "name": "C/C++ Runner: Debug Session",
       "type": "cppdbg",
       "request": "launch",
-      "args": [],
+      "args": [ 
+    "-g",
+    "*.c",
+    "-o",
+    "output/Escola.exe"
+],
       "stopAtEntry": false,
       "externalConsole": true,
       "cwd": "c:/C/Projetos/ProjetoEscola/ProjetoEscola",
