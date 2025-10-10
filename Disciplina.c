@@ -70,8 +70,8 @@ int menuDisciplina(){
 	printf("1 - Inserir Disciplina\n");
 	printf("2 - Atualizar Disciplina\n");
 	printf("3 - Excluir Disciplina\n");
-	printf("4 - Listar Disciplina\n");
 	printf("5 - Matricular Aluno\n");
+	printf("4 - Listar Disciplina\n");
 	scanf("%d",&opcao);
 
 	return opcao;
@@ -161,11 +161,7 @@ void mainDisciplina(Disciplina** inicioListaDisciplina, Professor** inicioListaP
 	      	}  
 	      	break;
 	      }
-	      case 4: {
-	      	listarDisciplinas(inicioListaDisciplina);
-	      	break;	
-	      }
-		  case 5: {
+		  case 4: {
 	      	retorno = matricularAluno(inicioListaDisciplina, inicioListaAluno);
 	      	if(retorno == SUCESSO_MATRICULA){ 
 	      		printf("Aluno matriculado com sucesso\n");
@@ -183,12 +179,20 @@ void mainDisciplina(Disciplina** inicioListaDisciplina, Professor** inicioListaP
 	      				printf("Aluno não cadastrado.\n");
 	      				break;
 	      			}
+					case ALUNO_MATRICULADO:{
+						printf("Aluno já matriculado na disciplina.\n");
+						break;
+					}
 	      			default:{
 	      				printf("Erro desconhecido.\n");
 	      			}
 	      		}
 	      	}  
 	      	break;
+	      }
+		  case 5: {
+	      	listarDisciplinas(inicioListaDisciplina);
+	      	break;	
 	      }
           default:{
 	      	printf("opcao inválida\n");
@@ -332,7 +336,7 @@ void listarDisciplinas(Disciplina** inicioDisciplina){
 
 			printf("\n### Alunos Matriculados ####\n");
 			for(int i = 0; i < DisciplinaAtual->qtdAlunos; i++){
-				printf("Aluno: %s\n", DisciplinaAtual->aluno[i]);
+				printf("Aluno: %s	Matrícula: %d\n", DisciplinaAtual->aluno[i], DisciplinaAtual->matriculaAluno[i]);
 			}
 
             DisciplinaAtual = DisciplinaAtual->prox;
@@ -370,6 +374,7 @@ int matricularAlunoNaLista(Disciplina** inicioDisciplina, int codigo, Aluno** in
 	if(achou){
 		Aluno* atualAluno = *inicioAluno;
 		int achou = FALSE;
+		int matriculado = FALSE;
 
 		int matricula;
 		printf("Digite a matrícula do aluno: ");    
@@ -385,10 +390,21 @@ int matricularAlunoNaLista(Disciplina** inicioDisciplina, int codigo, Aluno** in
 		}
 
 		if(achou){
-			strcpy(atualDisciplina->aluno[atualDisciplina->qtdAlunos], atualAluno->nome);
-			atualDisciplina->qtdAlunos++;
+			for(int i = 0; i < atualDisciplina->qtdAlunos; i++){
+				if(atualDisciplina->matriculaAluno[i] == atualAluno->matricula){
+					matriculado = TRUE;
+				}
+			}
 
-			return SUCESSO_MATRICULA;
+			if(!matriculado){
+				strcpy(atualDisciplina->aluno[atualDisciplina->qtdAlunos], atualAluno->nome);
+				atualDisciplina->matriculaAluno[atualDisciplina->qtdAlunos] = atualAluno->matricula;
+				atualDisciplina->qtdAlunos++;
+
+				return SUCESSO_MATRICULA;
+			}else{
+				return ALUNO_MATRICULADO;
+			}
 		}else{
 			return ERRO_CADASTRO_ALUNO;
 		}
