@@ -59,7 +59,7 @@ int main(){
 	      	break;
 	      }
 		  case 3: {
-			mainDisciplina(&inicioListaDisciplina);
+			mainDisciplina(&inicioListaDisciplina, &inicioListaProfessor, &inicioListaAluno);
 	      	break;
 		  }
 		  default:{

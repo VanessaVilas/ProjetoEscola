@@ -56,8 +56,8 @@ int validarCadastroProfessor(Professor* professor){
 int menuProfessor(){
 	int opcao;
 
-	printf("**** Módulo de Professor ****\n");
-	printf("**** Digite a opção: ****\n");
+	printf("#### Módulo de Professor ####\n");
+	printf("#### Digite a opção: ####\n");
 	printf("0 - Voltar para o menu geral\n");
 	printf("1 - Inserir Professor\n");
 	printf("2 - Atualizar Professor\n");
@@ -104,7 +104,7 @@ void mainProfessor(Professor** inicioListaProfessor){
 	      }
 		  case 2: {
 			retorno = atualizarProfessor(inicioListaProfessor);
-	      	if(retorno == SUCESSO_ATUALIZACAO){ 
+	      	if(retorno == SUCESSO_CADASTRO){ 
 	      		printf("Professor atualizado com sucesso\n");
 	      	}else{
 	      		switch(retorno){
