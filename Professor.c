@@ -10,7 +10,11 @@ int inserirProfessor(Professor** inicioProfessor);
 int atualizarProfessor(Professor** inicioProfessor);
 int excluirProfessor(Professor** inicioProfessor);
 void listarProfessor(Professor** inicioProfessor);
+void liberarListaProfessor(Professor* inicioProfessor);
 int menuProfessor();
+void listarProfessorOrdenado(Professor** inicioProfessor);
+void listarProfessorPorSexo(Professor** inicioProfessor);
+
 
 int geraMatriculaProfessor(){
 	static int num = 0;
@@ -34,7 +38,6 @@ int validarCadastroProfessor(Professor* professor){
     if(professor->sexo != 'M' && professor->sexo != 'F') {
         retorno = ERRO_CADASTRO_SEXO;
     }else{
-	    char data[11];
 	    printf("Digite a data de nascimento: ");
 	    scanf("%s", professor->data_nascimento.dataCompleta);
 	    getchar();
@@ -152,13 +155,38 @@ void mainProfessor(Professor** inicioListaProfessor){
 	      	}  
 	      	break;
 	      }
-	      case 4:{
-	      	listarProfessor(inicioListaProfessor);
-	      	break;	
-	      }
-		  default:{
-	      	printf("Opcao inválida\n");
-	      }
+	      case 4: {
+				int opcaoLista;
+					printf(" Opções de Listagem \n");
+					printf("1 - Listar todos os Professores\n");
+					printf("2 - Listar Professores por Sexo\n");
+					printf("3 - Listar Professores em Ordem Alfabética\n");
+					printf("Digite a opção: ");
+					scanf("%d", &opcaoLista);
+					getchar();
+
+					switch (opcaoLista) {
+						case 1:{
+							listarProfessor(inicioListaProfessor);
+							break;
+						}
+						case 2:{
+							listarProfessorPorSexo(inicioListaProfessor);
+							break;
+						}
+						case 3:{
+							listarProfessorOrdenado(inicioListaProfessor);
+							break;
+						}
+						default:{
+							printf("Opção inválida!\n");
+						}
+					}
+				break;
+			}
+			default:{
+			printf("Opcao inválida\n");
+			}
 	  	}
 	}
 }
@@ -299,6 +327,7 @@ void listarProfessor(Professor** inicioProfessor){
         }while (professorAtual != NULL);
     }    
     printf("-----\n\n");
+
 }
 
 void liberarListaProfessor(Professor* inicioProfessor){
@@ -311,3 +340,123 @@ void liberarListaProfessor(Professor* inicioProfessor){
 		atual = tmp;
 	}
 }
+
+void listarProfessorOrdenado(Professor** inicioProfessor) {
+    if (*inicioProfessor == NULL) {
+        printf("Lista Vazia\n");
+        return;
+    }
+
+    int contador = 0;
+    Professor* atual = *inicioProfessor;
+    while (atual != NULL) {
+        contador++;
+        atual = atual->prox;
+    }
+
+
+    Professor** vetor = (Professor**) malloc(contador * sizeof(Professor*));
+    atual = *inicioProfessor;
+    int i = 0;
+    while (atual != NULL) {
+        vetor[i] = atual;
+        i++;
+        atual = atual->prox;
+    }
+
+    for (int x = 0; x < contador - 1; x++) {
+        for (int y = x + 1; y < contador; y++) {
+            if (strcasecmp(vetor[x]->nome, vetor[y]->nome) > 0) {
+                Professor* temp = vetor[x];
+                vetor[x] = vetor[y];
+                vetor[y] = temp;
+            }
+        }
+    }
+
+    printf("\n### Lista de Professores (Ordem Alfabética) ###\n");
+    printf("----------------------------------------------------\n");
+    for (int j = 0; j < contador; j++) {
+        printf("Matrícula: %d\n", vetor[j]->matricula);
+        printf("Nome: %s\n", vetor[j]->nome);
+        printf("Sexo: %c\n", vetor[j]->sexo);
+        printf("Data Nascimento: %s\n", vetor[j]->data_nascimento.dataCompleta);
+        printf("CPF: %s\n", vetor[j]->cpf);
+        printf("----------------------------------------------------\n");
+    }
+
+    free(vetor);
+}
+
+void listarProfessorPorSexo(Professor** inicioProfessor) {
+	
+    if (*inicioProfessor == NULL) {
+        printf("Lista Vazia\n");
+        return;
+    }
+
+    char sexoFiltro;
+    printf("Digite o sexo para filtrar (M/F): ");
+    scanf(" %c", &sexoFiltro);
+    sexoFiltro = toupper(sexoFiltro);
+
+    if (sexoFiltro != 'M' && sexoFiltro != 'F') {
+        printf("Sexo inválido! Digite 'M' ou 'F'.\n");
+        return;
+    }
+
+
+    int contador = 0;
+    Professor* atual = *inicioProfessor;
+		while (atual != NULL) {
+			if (atual->sexo == sexoFiltro)
+				contador++;
+			atual = atual->prox;
+		}
+
+			if (contador == 0) {
+				printf("Nenhum professor encontrado para o sexo informado.\n");
+				return;
+			}
+
+
+    Professor** vetor = (Professor**) malloc(contador * sizeof(Professor*));
+    atual = *inicioProfessor;
+    int i = 0;
+		while (atual != NULL) {
+			if (atual->sexo == sexoFiltro) {
+				vetor[i] = atual;
+				i++;
+			}
+			atual = atual->prox;
+		}
+
+
+			for (int x = 0; x < contador - 1; x++) {
+				for (int y = x + 1; y < contador; y++) {
+					if (strcasecmp(vetor[x]->nome, vetor[y]->nome) > 0) {
+						Professor* temp = vetor[x];
+						vetor[x] = vetor[y];
+						vetor[y] = temp;
+					}
+				}
+			}
+
+    printf("\n### Professores do sexo %s (ordenados por nome) ###\n",
+           sexoFiltro == 'M' ? "Masculino" : "Feminino");
+
+			for (int j = 0; j < contador; j++) {
+				printf("-----\n");
+				printf("Matrícula: %d\n", vetor[j]->matricula);
+				printf("Nome: %s\n", vetor[j]->nome);
+				printf("Sexo: %c\n", vetor[j]->sexo);
+				printf("Data Nascimento: %s\n", vetor[j]->data_nascimento.dataCompleta);
+				printf("CPF: %s\n", vetor[j]->cpf);
+			}
+
+    printf("-----\n\n");
+
+free(vetor);
+}
+
+
