@@ -11,9 +11,11 @@
 int inserirDisciplina(Disciplina** inicioDisciplina, Professor** inicioListaProfessor);
 int atualizarDisciplina(Disciplina** inicioDisciplina, Professor** inicioListaProfessor);
 int excluirDisciplina(Disciplina** inicioDisciplina);
-void listarDisciplinas(Disciplina** inicioDisciplina);
 int matricularAluno(Disciplina** inicioDisciplina, Aluno** inicioListaAluno);
+void listarDisciplinas(Disciplina** inicioDisciplina);
+void listarDisciplinasEAlunos(Disciplina** inicioDisciplina, Aluno** inicioAluno);
 int menuDisciplina();
+int menuListarDisciplina();
 
 int geraCodigo(){
 	static int num = 0;
@@ -70,8 +72,20 @@ int menuDisciplina(){
 	printf("1 - Inserir Disciplina\n");
 	printf("2 - Atualizar Disciplina\n");
 	printf("3 - Excluir Disciplina\n");
-	printf("5 - Matricular Aluno\n");
-	printf("4 - Listar Disciplina\n");
+	printf("4 - Matricular Aluno\n");
+	printf("5 - Listar Disciplina\n");
+	scanf("%d",&opcao);
+
+	return opcao;
+}
+
+int menuListarDisciplina(){
+	int opcao;
+
+	printf("#### Digite a opção: ####\n");
+	printf("0 - Voltar para o módulo de disciplina\n");
+	printf("1 - Listar apenas os dados da disciplina\n");
+	printf("2 - Listar os dados da  disciplina e os alunos matriculados\n");
 	scanf("%d",&opcao);
 
 	return opcao;
@@ -191,9 +205,31 @@ void mainDisciplina(Disciplina** inicioListaDisciplina, Professor** inicioListaP
 	      	break;
 	      }
 		  case 5: {
-	      	listarDisciplinas(inicioListaDisciplina);
-	      	break;	
-	      }
+	      	int opcao;
+			int sair = FALSE;
+
+			while (!sair){
+				opcao = menuListarDisciplina();
+				
+				switch(opcao){
+				  case 0:{
+					sair = TRUE;
+					break;
+				  }
+				  case 1:{
+					listarDisciplinas(inicioListaDisciplina);
+					break;
+				  }
+				  case 2:{
+					listarDisciplinasEAlunos(inicioListaDisciplina, inicioListaAluno);
+					break;
+				  }
+				  default:{
+					printf("opcao inválida\n");
+				  }
+				}
+			}
+	      }	
           default:{
 	      	printf("opcao inválida\n");
 	      }
@@ -319,43 +355,6 @@ int excluirDisciplina(Disciplina** inicioDisciplina){
 	return excluirDisciplinaNaLista(inicioDisciplina, codigo);
 }
 
-
-void listarDisciplinas(Disciplina** inicioDisciplina){
-    int i;
-    Disciplina* DisciplinaAtual = *inicioDisciplina;
-    if(*inicioDisciplina == NULL){
-        printf("Lista Vazia\n");
-    }else{
-    	printf("\n### Disciplinas Cadastradas ####\n");
-        do{
-            printf("-----\n");
-            printf("Código: %d\n", DisciplinaAtual->codigo);
-            printf("Nome: %s\n", DisciplinaAtual->nome);
-            printf("Semestre: %d\n", DisciplinaAtual->semestre);
-            printf("Professor: %s\n", DisciplinaAtual->professor);
-
-			printf("\n### Alunos Matriculados ####\n");
-			for(int i = 0; i < DisciplinaAtual->qtdAlunos; i++){
-				printf("Aluno: %s	Matrícula: %d\n", DisciplinaAtual->aluno[i], DisciplinaAtual->matriculaAluno[i]);
-			}
-
-            DisciplinaAtual = DisciplinaAtual->prox;
-        }while (DisciplinaAtual != NULL);
-    }    
-    printf("-----\n\n");
-}
-
-void liberarListaDisciplina(Disciplina* inicioDisciplina){
-	Disciplina* atual = inicioDisciplina;
-	Disciplina* tmp;
-
-	while(atual != NULL){
-		tmp = atual->prox;
-		free(atual);
-		atual = tmp;
-	}
-}
-
 int matricularAlunoNaLista(Disciplina** inicioDisciplina, int codigo, Aluno** inicioAluno){
 	if(*inicioDisciplina == NULL)
 		return LISTA_VAZIA;
@@ -397,7 +396,6 @@ int matricularAlunoNaLista(Disciplina** inicioDisciplina, int codigo, Aluno** in
 			}
 
 			if(!matriculado){
-				strcpy(atualDisciplina->aluno[atualDisciplina->qtdAlunos], atualAluno->nome);
 				atualDisciplina->matriculaAluno[atualDisciplina->qtdAlunos] = atualAluno->matricula;
 				atualDisciplina->qtdAlunos++;
 
@@ -420,4 +418,77 @@ int matricularAluno(Disciplina** inicioDisciplina, Aluno** inicioAluno){
     getchar();
 
 	return matricularAlunoNaLista(inicioDisciplina, codigo, inicioAluno);
+}
+
+void listarDisciplinas(Disciplina** inicioDisciplina){
+    Disciplina* DisciplinaAtual = *inicioDisciplina;
+    if(*inicioDisciplina == NULL){
+        printf("Lista Vazia\n");
+    }else{
+    	printf("\n### Disciplinas Cadastradas ####\n");
+        do{
+            printf("-----\n");
+            printf("Código: %d\n", DisciplinaAtual->codigo);
+            printf("Nome: %s\n", DisciplinaAtual->nome);
+            printf("Semestre: %d\n", DisciplinaAtual->semestre);
+            printf("Professor: %s\n", DisciplinaAtual->professor);
+
+            DisciplinaAtual = DisciplinaAtual->prox;
+        }while (DisciplinaAtual != NULL);
+    }    
+    printf("-----\n\n");
+}
+
+void listarDisciplinasEAlunos(Disciplina** inicioDisciplina, Aluno** inicioAluno){
+	Disciplina* DisciplinaAtual = *inicioDisciplina;
+	if(*inicioDisciplina == NULL){
+        printf("Lista Vazia\n");
+    }else{
+    	printf("\n### Disciplinas Cadastradas ####\n");
+        do{
+            printf("-----\n");
+            printf("Código: %d\n", DisciplinaAtual->codigo);
+            printf("Nome: %s\n", DisciplinaAtual->nome);
+            printf("Semestre: %d\n", DisciplinaAtual->semestre);
+            printf("Professor: %s\n", DisciplinaAtual->professor);
+
+			printf("\n### Alunos Matriculados ####\n");
+			if(DisciplinaAtual->qtdAlunos == 0){
+				printf("Sem Alunos Matriculados\n");
+			}else{
+				Aluno* AlunoAtual = *inicioAluno;
+				int achou = FALSE;
+
+				for(int i = 0; i < DisciplinaAtual->qtdAlunos; i++){
+					while(AlunoAtual != NULL){
+						if(AlunoAtual->matricula == DisciplinaAtual->matriculaAluno[i]){
+							achou = TRUE;
+							break;
+						}
+						AlunoAtual = AlunoAtual->prox;
+					}
+
+					if(achou){
+						printf("-----\n");
+						printf("Aluno: %s	Matrícula: %d\n", AlunoAtual->nome, DisciplinaAtual->matriculaAluno[i]);
+					}else{
+						printf("-----\n");
+						printf("Aluno Inexistente\n");
+					}
+				}
+			}
+			DisciplinaAtual = DisciplinaAtual->prox;
+        }while (DisciplinaAtual != NULL);
+    }
+}
+
+void liberarListaDisciplina(Disciplina* inicioDisciplina){
+	Disciplina* atual = inicioDisciplina;
+	Disciplina* tmp;
+
+	while(atual != NULL){
+		tmp = atual->prox;
+		free(atual);
+		atual = tmp;
+	}
 }

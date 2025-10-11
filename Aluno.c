@@ -282,7 +282,6 @@ int excluirAluno(Aluno** inicioAluno){
 }
 
 void listarAlunos(Aluno** inicioAluno){
-    int i;
     Aluno* alunoAtual = *inicioAluno;
     if(*inicioAluno == NULL){
         printf("Lista Vazia\n");
