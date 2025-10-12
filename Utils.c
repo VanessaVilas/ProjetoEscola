@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include "Escola.h"
@@ -6,7 +7,7 @@ int verifica_numero(char CARACTER);
 int verifica_ano_bisexto(int iAno);
 int valida_numeros(int iDia, int iMes, int iAno);
 
-int validar_data(char *data){
+int validar_data(char *data, Data *d){
     int iDia;
     int iMes;
     int iAno;
@@ -74,6 +75,10 @@ int validar_data(char *data){
  
     retorno= valida_numeros(iDia, iMes, iAno);
     
+    d->dia = iDia;
+    d->mes = iMes;
+    d->ano = iAno;
+
     return retorno;
 }
 

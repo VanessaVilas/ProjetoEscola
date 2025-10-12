@@ -6,4 +6,4 @@ typedef struct dma {
 } Data; 
 
 
-int validar_data(char data[]);
+int validar_data(char data[], Data *d);

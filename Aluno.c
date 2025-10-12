@@ -39,7 +39,7 @@ int validarCadastroAluno(Aluno* aluno){
 	    scanf("%s", aluno->data_nascimento.dataCompleta);
 	    getchar();
 
-	    int dataValida = validar_data(aluno->data_nascimento.dataCompleta);
+	    int dataValida = validar_data(aluno->data_nascimento.dataCompleta, &aluno->data_nascimento);
 	    if(dataValida == FALSE){
 	        retorno = ERRO_DATA_INVALIDA;
 	    }else{

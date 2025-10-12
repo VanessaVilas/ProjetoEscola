@@ -42,7 +42,7 @@ int validarCadastroProfessor(Professor* professor){
 	    scanf("%s", professor->data_nascimento.dataCompleta);
 	    getchar();
 
-	    int dataValida = validar_data(professor->data_nascimento.dataCompleta);
+	    int dataValida = validar_data(professor->data_nascimento.dataCompleta, &professor->data_nascimento);
 	    if(dataValida == FALSE){
 	        retorno = ERRO_DATA_INVALIDA;
 	    }else{
@@ -157,15 +157,21 @@ void mainProfessor(Professor** inicioListaProfessor){
 	      }
 	      case 4: {
 				int opcaoLista;
-					printf(" Opções de Listagem \n");
+				int sairLista = FALSE;
+					printf("#### Listagem ####\n");
+					printf("#### Digite a opção: ####\n");
+					printf("0 - Voltar para o módulo de professor\n");
 					printf("1 - Listar todos os Professores\n");
 					printf("2 - Listar Professores por Sexo\n");
 					printf("3 - Listar Professores em Ordem Alfabética\n");
-					printf("Digite a opção: ");
 					scanf("%d", &opcaoLista);
 					getchar();
 
 					switch (opcaoLista) {
+						case 0:{
+							sairLista = TRUE;
+							break;
+						}
 						case 1:{
 							listarProfessor(inicioListaProfessor);
 							break;
@@ -374,16 +380,16 @@ void listarProfessorOrdenado(Professor** inicioProfessor) {
         }
     }
 
-    printf("\n### Lista de Professores (Ordem Alfabética) ###\n");
-    printf("----------------------------------------------------\n");
+    printf("\n### Professores Cadastrados (Ordem Alfabética) ###\n");
     for (int j = 0; j < contador; j++) {
+		printf("-----\n");
         printf("Matrícula: %d\n", vetor[j]->matricula);
         printf("Nome: %s\n", vetor[j]->nome);
         printf("Sexo: %c\n", vetor[j]->sexo);
         printf("Data Nascimento: %s\n", vetor[j]->data_nascimento.dataCompleta);
         printf("CPF: %s\n", vetor[j]->cpf);
-        printf("----------------------------------------------------\n");
     }
+	printf("-----\n\n");
 
     free(vetor);
 }
@@ -442,7 +448,7 @@ void listarProfessorPorSexo(Professor** inicioProfessor) {
 				}
 			}
 
-    printf("\n### Professores do sexo %s (ordenados por nome) ###\n",
+    printf("\n### Professores Cadastrados do Sexo %s (Ordem Alfabética) ###\n",
            sexoFiltro == 'M' ? "Masculino" : "Feminino");
 
 			for (int j = 0; j < contador; j++) {

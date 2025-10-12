@@ -82,10 +82,11 @@ int menuDisciplina(){
 int menuListarDisciplina(){
 	int opcao;
 
+	printf("#### Listagem ####\n");
 	printf("#### Digite a opção: ####\n");
 	printf("0 - Voltar para o módulo de disciplina\n");
-	printf("1 - Listar apenas os dados da disciplina\n");
-	printf("2 - Listar os dados da  disciplina e os alunos matriculados\n");
+	printf("1 - Listar Dados das Disciplinas\n");
+	printf("2 - Listar Dados das Disciplinas e Alunos matriculados\n");
 	scanf("%d",&opcao);
 
 	return opcao;
@@ -454,7 +455,7 @@ void listarDisciplinasEAlunos(Disciplina** inicioDisciplina, Aluno** inicioAluno
 
 			printf("\n### Alunos Matriculados ####\n");
 			if(DisciplinaAtual->qtdAlunos == 0){
-				printf("Sem Alunos Matriculados\n");
+				printf("Lista Vazia\n");
 			}else{
 				Aluno* AlunoAtual = *inicioAluno;
 				int achou = FALSE;
@@ -470,16 +471,18 @@ void listarDisciplinasEAlunos(Disciplina** inicioDisciplina, Aluno** inicioAluno
 
 					if(achou){
 						printf("-----\n");
-						printf("Aluno: %s	Matrícula: %d\n", AlunoAtual->nome, DisciplinaAtual->matriculaAluno[i]);
+						printf("Aluno: %s\n", AlunoAtual->nome);
+            			printf("Matrícula: %d\n", DisciplinaAtual->matriculaAluno[i]);
 					}else{
 						printf("-----\n");
-						printf("Aluno Inexistente\n");
+						printf("Aluno excluído\n");
 					}
 				}
 			}
 			DisciplinaAtual = DisciplinaAtual->prox;
         }while (DisciplinaAtual != NULL);
     }
+	printf("-----\n\n");
 }
 
 void liberarListaDisciplina(Disciplina* inicioDisciplina){
