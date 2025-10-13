@@ -18,8 +18,8 @@ int menuGeral(){
 	printf("1 - Gerenciar Aluno\n");
 	printf("2 - Gerenciar Professor\n");
 	printf("3 - Gerenciar Disciplina\n");
-	printf("4 - Listar Aniversariantes do Mês\n");
-	printf("5 - Buscar Nome\n");
+	printf("4 - Buscar Nome\n");
+	printf("5 - Listar Aniversariantes do Mês\n");
 
 	scanf("%d",&opcao);
 
@@ -58,7 +58,7 @@ int main(){
 	        break;
 	      }
 	      case 1: {
-	      	mainAluno(&inicioListaAluno);
+	      	mainAluno(&inicioListaAluno, &inicioListaDisciplina);
 	      	break;
 	      }
 	      case 2: {
@@ -70,11 +70,11 @@ int main(){
 	      	break;
 		  }
 		  case 4: {
-			listarAniversariantes(&inicioListaAluno, &inicioListaProfessor);
+			listarNomes(&inicioListaAluno, &inicioListaProfessor);
 			break;
 		  }
 		  case 5: {
-			listarNomes(&inicioListaAluno, &inicioListaProfessor);
+			listarAniversariantes(&inicioListaAluno, &inicioListaProfessor);
 			break;
 		  }
 		  default:{

@@ -5,10 +5,11 @@
 
 #include "Escola.h"
 #include "Aluno.h"
+#include "Disciplina.h"
 
 int inserirAluno(Aluno** inicioAluno);
 int atualizarAluno(Aluno** inicioAluno);
-int excluirAluno(Aluno** inicioAluno);
+int excluirAluno(Aluno** inicioAluno, Disciplina** inicioDisciplina);
 void listarAlunos(Aluno** inicioAluno);
 int menuAluno();
 
@@ -68,7 +69,7 @@ int menuAluno(){
 	return opcao;
 }
 
-void mainAluno(Aluno** inicioListaAluno){
+void mainAluno(Aluno** inicioListaAluno, Disciplina** inicioListaDisciplina){
 	int opcao, retorno;
 	int sair = FALSE;
 
@@ -132,7 +133,7 @@ void mainAluno(Aluno** inicioListaAluno){
 	      	break;
 		  }
 	      case 3:{
-	      	retorno = excluirAluno(inicioListaAluno);
+	      	retorno = excluirAluno(inicioListaAluno, inicioListaDisciplina);
 	      	if(retorno == SUCESSO_EXCLUSAO){ 
 	      		printf("Aluno excluido com sucesso\n");
 	      	}else{
@@ -241,7 +242,25 @@ int atualizarAluno(Aluno** inicioAluno){
 	return atualizarAlunoNaLista(inicioAluno, matricula);
 }
 
-int excluirAlunoNaLista(Aluno** inicioAluno, int matricula){
+void desmatricularAluno(Disciplina* inicioDisciplina, int matricula){
+    Disciplina* DisciplinaAtual = inicioDisciplina;
+
+    while (DisciplinaAtual != NULL) {
+        for (int i = 0; i < DisciplinaAtual->qtdAlunos; i++) {
+            if (DisciplinaAtual->matriculaAluno[i] == matricula) {
+                for (int j = i; j < DisciplinaAtual->qtdAlunos - 1; j++) {
+                    DisciplinaAtual->matriculaAluno[j] = DisciplinaAtual->matriculaAluno[j + 1];
+                }
+
+                DisciplinaAtual->qtdAlunos--;
+            }
+        }
+
+        DisciplinaAtual = DisciplinaAtual->prox;
+    }
+}
+
+int excluirAlunoNaLista(Aluno** inicioAluno, Disciplina** inicioDisciplina, int matricula){
 	if(*inicioAluno == NULL)
 		return LISTA_VAZIA;
 
@@ -267,18 +286,21 @@ int excluirAlunoNaLista(Aluno** inicioAluno, int matricula){
 		else
 			anterior->prox = atual->prox;
 		free(atual);
+
+		desmatricularAluno(*inicioDisciplina, matricula);
+
 		return SUCESSO_EXCLUSAO;
 	}else
 		return NAO_ENCONTRADO;
 }
 
-int excluirAluno(Aluno** inicioAluno){
+int excluirAluno(Aluno** inicioAluno, Disciplina** inicioDisciplina){
 	int matricula;
 	printf("Digite a matrícula: ");    
     scanf("%d", &matricula);
     getchar();
 
-	return excluirAlunoNaLista(inicioAluno, matricula);
+	return excluirAlunoNaLista(inicioAluno, inicioDisciplina, matricula);
 }
 
 void listarAlunos(Aluno** inicioAluno){

@@ -1,3 +1,5 @@
+typedef struct dados_disciplina Disciplina;
+
 typedef struct dados_aluno{
   
   int matricula;
@@ -9,7 +11,7 @@ typedef struct dados_aluno{
 
 } Aluno;
 
-void mainAluno(Aluno** inicio);
+void mainAluno(Aluno** inicio, Disciplina** inicioDisciplina);
 void liberarListaAluno(Aluno* inicio);
 
 

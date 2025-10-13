@@ -12,8 +12,8 @@ int inserirDisciplina(Disciplina** inicioDisciplina, Professor** inicioListaProf
 int atualizarDisciplina(Disciplina** inicioDisciplina, Professor** inicioListaProfessor);
 int excluirDisciplina(Disciplina** inicioDisciplina);
 int matricularAluno(Disciplina** inicioDisciplina, Aluno** inicioListaAluno);
-void listarDisciplinas(Disciplina** inicioDisciplina);
-void listarDisciplinasEAlunos(Disciplina** inicioDisciplina, Aluno** inicioAluno);
+void listarDisciplinas(Disciplina** inicioDisciplina, Aluno** inicioAluno, int opcao);
+void listarDisciplinasExtrapoladas(Disciplina** inicioDisciplina, Aluno** inicioAluno);
 int menuDisciplina();
 int menuListarDisciplina();
 
@@ -63,6 +63,51 @@ int validarCadastroDisciplina(Disciplina* disciplina, Professor** inicioProfesso
 	return retorno;
 }
 
+int menuListarDisciplina(){
+	int opcao;
+
+	printf("#### Listagem ####\n");
+	printf("#### Digite a opção: ####\n");
+	printf("0 - Voltar para o módulo de disciplina\n");
+	printf("1 - Listar Disciplinas\n");
+	printf("2 - Listar Disciplinas e Alunos Matriculados\n");
+	printf("3 - Listar Disciplinas que Extrapolam 40 Vagas\n");
+	scanf("%d",&opcao);
+
+	return opcao;
+}
+
+void mainListarDisciplina(Disciplina** inicioListaDisciplina, Professor** inicioListaProfessor, Aluno** inicioListaAluno){
+	int opcao;
+	int sair = FALSE;
+
+	while (!sair){
+		opcao = menuListarDisciplina();
+		
+		switch(opcao){
+			case 0:{
+			sair = TRUE;
+			break;
+			}
+			case 1:{
+				listarDisciplinas(inicioListaDisciplina, inicioListaAluno, opcao);
+				break;
+			}
+			case 2:{
+				listarDisciplinas(inicioListaDisciplina, inicioListaAluno, opcao);
+				break;
+			}
+			case 3:{
+				listarDisciplinasExtrapoladas(inicioListaDisciplina, inicioListaAluno);
+				break;
+			}
+			default:{
+				printf("opcao inválida\n");
+			}
+		}
+	}
+}
+
 int menuDisciplina(){
 	int opcao;
 
@@ -74,19 +119,6 @@ int menuDisciplina(){
 	printf("3 - Excluir Disciplina\n");
 	printf("4 - Matricular Aluno\n");
 	printf("5 - Listar Disciplina\n");
-	scanf("%d",&opcao);
-
-	return opcao;
-}
-
-int menuListarDisciplina(){
-	int opcao;
-
-	printf("#### Listagem ####\n");
-	printf("#### Digite a opção: ####\n");
-	printf("0 - Voltar para o módulo de disciplina\n");
-	printf("1 - Listar Dados das Disciplinas\n");
-	printf("2 - Listar Dados das Disciplinas e Alunos matriculados\n");
 	scanf("%d",&opcao);
 
 	return opcao;
@@ -206,30 +238,8 @@ void mainDisciplina(Disciplina** inicioListaDisciplina, Professor** inicioListaP
 	      	break;
 	      }
 		  case 5: {
-	      	int opcao;
-			int sair = FALSE;
-
-			while (!sair){
-				opcao = menuListarDisciplina();
-				
-				switch(opcao){
-				  case 0:{
-					sair = TRUE;
-					break;
-				  }
-				  case 1:{
-					listarDisciplinas(inicioListaDisciplina);
-					break;
-				  }
-				  case 2:{
-					listarDisciplinasEAlunos(inicioListaDisciplina, inicioListaAluno);
-					break;
-				  }
-				  default:{
-					printf("opcao inválida\n");
-				  }
-				}
-			}
+	      	mainListarDisciplina(inicioListaDisciplina, inicioListaProfessor, inicioListaAluno);
+			break;
 	      }	
           default:{
 	      	printf("opcao inválida\n");
@@ -421,8 +431,35 @@ int matricularAluno(Disciplina** inicioDisciplina, Aluno** inicioAluno){
 	return matricularAlunoNaLista(inicioDisciplina, codigo, inicioAluno);
 }
 
-void listarDisciplinas(Disciplina** inicioDisciplina){
+void listarAlunosMatriculados(Disciplina* DisciplinaAtual, Aluno** inicioAluno){
+	printf("\n### Alunos Matriculados ####\n");
+	if(DisciplinaAtual->qtdAlunos == 0){
+		printf("Lista Vazia\n");
+	}else{
+		Aluno* AlunoAtual = *inicioAluno;
+		int achou = FALSE;
+
+		for(int i = 0; i < DisciplinaAtual->qtdAlunos; i++){
+			while(AlunoAtual != NULL){
+				if(AlunoAtual->matricula == DisciplinaAtual->matriculaAluno[i]){
+					achou = TRUE;
+					break;
+				}
+				AlunoAtual = AlunoAtual->prox;
+			}
+
+			if(achou){
+				printf("-----\n");
+				printf("Aluno: %s\n", AlunoAtual->nome);
+				printf("Matrícula: %d\n", DisciplinaAtual->matriculaAluno[i]);
+			}
+		}
+	}
+}
+
+void listarDisciplinas(Disciplina** inicioDisciplina, Aluno** inicioAluno, int opcao){
     Disciplina* DisciplinaAtual = *inicioDisciplina;
+
     if(*inicioDisciplina == NULL){
         printf("Lista Vazia\n");
     }else{
@@ -434,17 +471,22 @@ void listarDisciplinas(Disciplina** inicioDisciplina){
             printf("Semestre: %d\n", DisciplinaAtual->semestre);
             printf("Professor: %s\n", DisciplinaAtual->professor);
 
+			if(opcao == 2 || opcao == 3){
+				listarAlunosMatriculados(DisciplinaAtual, inicioAluno);
+			}
+
             DisciplinaAtual = DisciplinaAtual->prox;
         }while (DisciplinaAtual != NULL);
-    }    
-    printf("-----\n\n");
+		printf("-----\n\n");
+    }
 }
 
-void listarDisciplinasEAlunos(Disciplina** inicioDisciplina, Aluno** inicioAluno){
-	Disciplina* DisciplinaAtual = *inicioDisciplina;
-	if(*inicioDisciplina == NULL){
+void listarDisciplinasExtrapoladas(Disciplina** inicioDisciplina, Aluno** inicioAluno){
+    Disciplina* DisciplinaAtual = *inicioDisciplina;
+
+    if(*inicioDisciplina == NULL){
         printf("Lista Vazia\n");
-    }else{
+    }else if(DisciplinaAtual->qtdAlunos > 40){
     	printf("\n### Disciplinas Cadastradas ####\n");
         do{
             printf("-----\n");
@@ -453,36 +495,14 @@ void listarDisciplinasEAlunos(Disciplina** inicioDisciplina, Aluno** inicioAluno
             printf("Semestre: %d\n", DisciplinaAtual->semestre);
             printf("Professor: %s\n", DisciplinaAtual->professor);
 
-			printf("\n### Alunos Matriculados ####\n");
-			if(DisciplinaAtual->qtdAlunos == 0){
-				printf("Lista Vazia\n");
-			}else{
-				Aluno* AlunoAtual = *inicioAluno;
-				int achou = FALSE;
+			listarAlunosMatriculados(DisciplinaAtual, inicioAluno);
 
-				for(int i = 0; i < DisciplinaAtual->qtdAlunos; i++){
-					while(AlunoAtual != NULL){
-						if(AlunoAtual->matricula == DisciplinaAtual->matriculaAluno[i]){
-							achou = TRUE;
-							break;
-						}
-						AlunoAtual = AlunoAtual->prox;
-					}
-
-					if(achou){
-						printf("-----\n");
-						printf("Aluno: %s\n", AlunoAtual->nome);
-            			printf("Matrícula: %d\n", DisciplinaAtual->matriculaAluno[i]);
-					}else{
-						printf("-----\n");
-						printf("Aluno excluído\n");
-					}
-				}
-			}
-			DisciplinaAtual = DisciplinaAtual->prox;
+            DisciplinaAtual = DisciplinaAtual->prox;
         }while (DisciplinaAtual != NULL);
-    }
-	printf("-----\n\n");
+		printf("-----\n\n");
+    }else{
+		printf("Nenhuma disciplina extrapola 40 vagas.\n");
+	}
 }
 
 void liberarListaDisciplina(Disciplina* inicioDisciplina){

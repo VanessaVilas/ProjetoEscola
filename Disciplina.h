@@ -1,3 +1,6 @@
+typedef struct dados_professor Professor;
+typedef struct dados_aluno Aluno;
+
 typedef struct dados_disciplina{
     
   char nome[50];
