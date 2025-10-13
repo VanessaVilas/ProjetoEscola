@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <time.h>
 
 #include "Escola.h"
@@ -7,6 +8,7 @@
 #include "Disciplina.h"
 
 void listarAniversariantes(Aluno** inicioAluno, Professor** inicioProfessor);
+void listarNomes(Aluno** inicioAluno, Professor** inicioProfessor);
 
 int menuGeral(){
 	int opcao;
@@ -17,6 +19,7 @@ int menuGeral(){
 	printf("2 - Gerenciar Professor\n");
 	printf("3 - Gerenciar Disciplina\n");
 	printf("4 - Listar Aniversariantes do Mês\n");
+	printf("5 - Buscar Nome\n");
 
 	scanf("%d",&opcao);
 
@@ -70,6 +73,10 @@ int main(){
 			listarAniversariantes(&inicioListaAluno, &inicioListaProfessor);
 			break;
 		  }
+		  case 5: {
+			listarNomes(&inicioListaAluno, &inicioListaProfessor);
+			break;
+		  }
 		  default:{
 	      	printf("opcao inválida\n");
 	      }
@@ -113,10 +120,59 @@ void listarAniversariantes(Aluno** inicioAluno, Professor** inicioProfessor){
 			}
 			atualProfessor = atualProfessor->prox;
 		}
+		printf("-----\n\n");
 
 		if(!achou){
-			printf("Nenhum professor ou aluno é aniversariante esse mês.\n");
+			printf("Não tem nenhum aniversariante esse mês\n");
 		}
-		printf("-----\n\n");
+	}
+}
+
+void listarNomes(Aluno** inicioAluno, Professor** inicioProfessor){
+	char letras[50];
+	printf("Digite no mínimo três letras: ");    
+    scanf("%s", letras);
+    getchar();
+
+	Aluno* atualAluno = *inicioAluno;
+	Professor* atualProfessor = *inicioProfessor;
+	int achou = FALSE;
+
+	if(*inicioAluno == NULL && *inicioProfessor == NULL){
+        printf("Listas Vazias\n");
+	}else{
+		while(atualAluno != NULL){
+			if(strstr(atualAluno->nome, letras) != NULL){
+				achou = TRUE;
+				
+				printf("-----\n");
+				printf("Matrícula Aluno: %d\n", atualAluno->matricula);
+				printf("Nome: %s\n", atualAluno->nome);
+				printf("Sexo: %c\n", atualAluno->sexo);
+				printf("Data Nascimento: %s\n", atualAluno->data_nascimento.dataCompleta);
+				printf("CPF: %s\n", atualAluno->cpf);
+			}
+			atualAluno = atualAluno->prox;
+		}
+
+		while(atualProfessor != NULL){
+			if(strstr(atualProfessor->nome, letras) != NULL){
+				achou = TRUE;
+				
+				printf("-----\n");
+				printf("Matrícula Professor: %d\n", atualProfessor->matricula);
+				printf("Nome: %s\n", atualProfessor->nome);
+				printf("Sexo: %c\n", atualProfessor->sexo);
+				printf("Data Nascimento: %s\n", atualProfessor->data_nascimento.dataCompleta);
+				printf("CPF: %s\n", atualProfessor->cpf);
+			}
+			atualProfessor = atualProfessor->prox;
+		}
+
+		if(!achou){
+			printf("Não foi encontrado nenhum nome com as letras digitadas.\n");
+		}else{
+			printf("-----\n\n");	
+		}
 	}
 }
