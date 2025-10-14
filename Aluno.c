@@ -11,7 +11,7 @@
 int inserirAluno(Aluno** inicioAluno);
 int atualizarAluno(Aluno** inicioAluno);
 int excluirAluno(Aluno** inicioAluno, Disciplina** inicioDisciplina);
-void listarAlunos(Aluno** inicioAluno, int opcao);
+void listarAlunos(Aluno** inicioAluno);
 int menuAluno();
 void listarAlunoOrdenado(Aluno** inicioAluno);
 void listarAlunoPorSexo(Aluno** inicioAluno);
@@ -23,8 +23,6 @@ int geraMatriculaAluno(){
 	return num;
 }
 
-int menuListarAluno(){
-	int opcao;
 int validarCadastroAluno(Aluno* aluno){
 	int retorno = SUCESSO_CADASTRO;
 	
@@ -45,44 +43,18 @@ int validarCadastroAluno(Aluno* aluno){
 	    scanf("%s", aluno->data_nascimento.dataCompleta);
 	    getchar();
 
-	printf("#### Listagem ####\n");
-	printf("#### Digite a opção: ####\n");
-	printf("0 - Voltar para o módulo de aluno\n");
-	printf("1 - Listar Alunos\n");
-	printf("2 - Listar Alunos por Sexo\n");
-	printf("3 - Listar Alunos Ordenados por Nome\n");
-	printf("4 - Listar Alunos Ordenados por Data de Nascimento\n");
-	printf("5 - Listar Alunos Matriculados em Menos de 3 Disciplinas\n");
-	scanf("%d",&opcao);
-
-	return opcao;
-}
-
-void mainListarAluno(Aluno** inicioListaAluno){
-	int opcao;
-	int sair = FALSE;
-
-	while (!sair){
-		opcao = menuListarAluno();
-		
-		switch(opcao){
-			case 0:{
-			sair = TRUE;
-			break;
-			}
-			case 1:{
-				listarAlunos(inicioListaAluno, opcao);
-				break;
-			}
-			case 5:{
-				listarAlunos(inicioListaAluno, opcao);
-				break;
-			}
-			default:{
-				printf("opcao inválida\n");
-			}
-		}
-	}
+	    int dataValida = validar_data(aluno->data_nascimento.dataCompleta, &aluno->data_nascimento);
+	    if(dataValida == FALSE){
+	        retorno = ERRO_DATA_INVALIDA;
+	    }else{
+		    printf("Digite o CPF: ");
+		    fgets(aluno->cpf, 15, stdin); 
+		    ln = strlen(aluno->cpf) - 1; 
+		    if(aluno->cpf[ln] == '\n')
+		        aluno->cpf[ln] = '\0';
+	    }
+    }
+	return retorno;
 }
 
 int menuAluno(){
@@ -184,19 +156,8 @@ void mainAluno(Aluno** inicioListaAluno, Disciplina** inicioListaDisciplina){
 	      	}  
 	      	break;
 	      }
-<<<<<<< HEAD
 	       case 4: {
 				int opcaoLista;
-=======
-	      case 4:{
-	      	mainListarAluno(inicioListaAluno);
-			break;
-	      }
-		  default:{
-	      	printf("opcao inválida\n");
-	      }
-		  		int opcaoLista;
->>>>>>> 00935aef4a980a87c076409236b9b5ba457fd1e4
 				int sairLista = FALSE;
 				while (!sairLista) {
 					printf("#### Listagem ####\n");
@@ -242,41 +203,6 @@ void mainAluno(Aluno** inicioListaAluno, Disciplina** inicioListaDisciplina){
 			}
 		}
 	}
-}
-
-int validarCadastroAluno(Aluno* aluno){
-	int retorno = SUCESSO_CADASTRO;
-	
-	printf("Digite o nome: ");
-    fgets(aluno->nome, 50, stdin);
-    size_t ln = strlen(aluno->nome) - 1;
-    if(aluno->nome[ln] == '\n')
-        aluno->nome[ln] = '\0';
-    
-    printf("Digite o sexo: ");
-    scanf("%c", &aluno->sexo);
-    
-    aluno->sexo = toupper(aluno->sexo);
-    if(aluno->sexo != 'M' && aluno->sexo != 'F') {
-        retorno = ERRO_CADASTRO_SEXO;
-    }else{
-	    char data[11];
-	    printf("Digite a data de nascimento: ");
-	    scanf("%s", aluno->data_nascimento.dataCompleta);
-	    getchar();
-
-	    int dataValida = validar_data(aluno->data_nascimento.dataCompleta, &aluno->data_nascimento);
-	    if(dataValida == FALSE){
-	        retorno = ERRO_DATA_INVALIDA;
-	    }else{
-		    printf("Digite o CPF: ");
-		    fgets(aluno->cpf, 15, stdin); 
-		    ln = strlen(aluno->cpf) - 1; 
-		    if(aluno->cpf[ln] == '\n')
-		        aluno->cpf[ln] = '\0';
-	    }
-    }
-	return retorno;
 }
 
 void inserirAlunoNaLista(Aluno** inicioAluno, Aluno* novoAluno){
@@ -418,11 +344,11 @@ int excluirAluno(Aluno** inicioAluno, Disciplina** inicioDisciplina){
 	return excluirAlunoNaLista(inicioAluno, inicioDisciplina, matricula);
 }
 
-void listarAlunos(Aluno** inicioAluno, int opcao){
+void listarAlunos(Aluno** inicioAluno){
     Aluno* alunoAtual = *inicioAluno;
     if(*inicioAluno == NULL){
         printf("Lista Vazia\n");
-    }else if(opcao == 1 || (opcao == 5 && alunoAtual->qtdDisciplinas < 3)){
+    }else{
     	printf("\n### Alunos Cadastrados ####\n");
         do{
             printf("-----\n");
@@ -434,10 +360,8 @@ void listarAlunos(Aluno** inicioAluno, int opcao){
             
             alunoAtual = alunoAtual->prox;
         }while (alunoAtual != NULL);
-		printf("-----\n\n");
-    }else if(opcao == 5){
-		printf("Nenhum aluno está matriculado em menos de 3 disciplinas.\n");
-	}
+    }    
+    printf("-----\n\n");
 }
 
 void liberarListaAluno(Aluno* inicioAluno){
@@ -611,6 +535,3 @@ void listarAlunoPorData(Aluno** inicioAluno){
 		
 free(vetor);
 }
-
-
-
