@@ -23,46 +23,6 @@ int geraCodigo(){
 	return num;
 }
 
-int validarCadastroDisciplina(Disciplina* disciplina, Professor** inicioProfessor){
-	int retorno = SUCESSO_CADASTRO;
-	
-	printf("Digite o nome: ");
-    fgets(disciplina->nome, 50, stdin);
-    size_t ln = strlen(disciplina->nome) - 1;
-    if(disciplina->nome[ln] == '\n')
-        disciplina->nome[ln] = '\0';
-
-    printf("Digite o semestre: ");
-    scanf("%d", &disciplina->semestre);
-	getchar();
-
-    if(disciplina->semestre <= 0){
-        retorno = ERRO_CADASTRO_SEMESTRE;
-    }else{
-		int matricula;
-		printf("Digite a matrícula do professor: ");    
-		scanf("%d", &matricula);
-		getchar();
-
-		Professor* atual = *inicioProfessor;
-		int achou = FALSE;
-
-		while(atual != NULL){
-			if(atual->matricula == matricula){
-				achou = TRUE;
-				break;
-			}
-			atual = atual->prox;
-		}
-
-		if(achou){
-			strcpy(disciplina->professor, atual->nome);
-		}else
-			return ERRO_CADASTRO_PROFESSOR;
-    }
-	return retorno;
-}
-
 int menuListarDisciplina(){
 	int opcao;
 
@@ -118,7 +78,7 @@ int menuDisciplina(){
 	printf("2 - Atualizar Disciplina\n");
 	printf("3 - Excluir Disciplina\n");
 	printf("4 - Matricular Aluno\n");
-	printf("5 - Listar Disciplina\n");
+	printf("5 - Listar Disciplinas\n");
 	scanf("%d",&opcao);
 
 	return opcao;
@@ -246,6 +206,46 @@ void mainDisciplina(Disciplina** inicioListaDisciplina, Professor** inicioListaP
 	      }
 	  	}
 	}
+}
+
+int validarCadastroDisciplina(Disciplina* disciplina, Professor** inicioProfessor){
+	int retorno = SUCESSO_CADASTRO;
+	
+	printf("Digite o nome: ");
+    fgets(disciplina->nome, 50, stdin);
+    size_t ln = strlen(disciplina->nome) - 1;
+    if(disciplina->nome[ln] == '\n')
+        disciplina->nome[ln] = '\0';
+
+    printf("Digite o semestre: ");
+    scanf("%d", &disciplina->semestre);
+	getchar();
+
+    if(disciplina->semestre <= 0){
+        retorno = ERRO_CADASTRO_SEMESTRE;
+    }else{
+		int matricula;
+		printf("Digite a matrícula do professor: ");    
+		scanf("%d", &matricula);
+		getchar();
+
+		Professor* atual = *inicioProfessor;
+		int achou = FALSE;
+
+		while(atual != NULL){
+			if(atual->matricula == matricula){
+				achou = TRUE;
+				break;
+			}
+			atual = atual->prox;
+		}
+
+		if(achou){
+			strcpy(disciplina->professor, atual->nome);
+		}else
+			return ERRO_CADASTRO_PROFESSOR;
+    }
+	return retorno;
 }
 
 void inserirDisciplinaNaLista(Disciplina** inicioDisciplina, Disciplina* novaDisciplina){
@@ -409,6 +409,8 @@ int matricularAlunoNaLista(Disciplina** inicioDisciplina, int codigo, Aluno** in
 			if(!matriculado){
 				atualDisciplina->matriculaAluno[atualDisciplina->qtdAlunos] = atualAluno->matricula;
 				atualDisciplina->qtdAlunos++;
+				atualAluno->codigoDisciplina[atualAluno->qtdDisciplinas] = atualDisciplina->codigo;
+				atualAluno->qtdDisciplinas++;
 
 				return SUCESSO_MATRICULA;
 			}else{
@@ -471,7 +473,7 @@ void listarDisciplinas(Disciplina** inicioDisciplina, Aluno** inicioAluno, int o
             printf("Semestre: %d\n", DisciplinaAtual->semestre);
             printf("Professor: %s\n", DisciplinaAtual->professor);
 
-			if(opcao == 2 || opcao == 3){
+			if(opcao == 2){
 				listarAlunosMatriculados(DisciplinaAtual, inicioAluno);
 			}
 
@@ -494,8 +496,6 @@ void listarDisciplinasExtrapoladas(Disciplina** inicioDisciplina, Aluno** inicio
             printf("Nome: %s\n", DisciplinaAtual->nome);
             printf("Semestre: %d\n", DisciplinaAtual->semestre);
             printf("Professor: %s\n", DisciplinaAtual->professor);
-
-			listarAlunosMatriculados(DisciplinaAtual, inicioAluno);
 
             DisciplinaAtual = DisciplinaAtual->prox;
         }while (DisciplinaAtual != NULL);
