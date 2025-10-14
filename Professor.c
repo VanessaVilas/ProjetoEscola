@@ -158,6 +158,7 @@ void mainProfessor(Professor** inicioListaProfessor){
 	      case 4: {
 				int opcaoLista;
 				int sairLista = FALSE;
+				while (!sairLista) {
 					printf("#### Listagem ####\n");
 					printf("#### Digite a opção: ####\n");
 					printf("0 - Voltar para o módulo de professor\n");
@@ -195,6 +196,7 @@ void mainProfessor(Professor** inicioListaProfessor){
 			}
 	  	}
 	}
+}
 }
 
 void inserirProfessorNaLista(Professor** inicioProfessor, Professor* novoProfessor){
