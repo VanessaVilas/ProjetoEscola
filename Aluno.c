@@ -6,6 +6,7 @@
 #include "Escola.h"
 #include "Aluno.h"
 #include "Disciplina.h"
+#include "Professor.h"
 
 int inserirAluno(Aluno** inicioAluno);
 int atualizarAluno(Aluno** inicioAluno);
@@ -14,6 +15,7 @@ void listarAlunos(Aluno** inicioAluno);
 int menuAluno();
 void listarAlunoOrdenado(Aluno** inicioAluno);
 void listarAlunoPorSexo(Aluno** inicioAluno);
+void listarAlunoPorData(Aluno** inicioAluno);
 
 int geraMatriculaAluno(){
 	static int num = 0;
@@ -154,7 +156,7 @@ void mainAluno(Aluno** inicioListaAluno, Disciplina** inicioListaDisciplina){
 	      	}  
 	      	break;
 	      }
-	      case 4:{
+	       case 4: {
 				int opcaoLista;
 				int sairLista = FALSE;
 				while (!sairLista) {
@@ -164,6 +166,7 @@ void mainAluno(Aluno** inicioListaAluno, Disciplina** inicioListaDisciplina){
 					printf("1 - Listar todos os Alunos\n");
 					printf("2 - Listar Alunos por Sexo\n");
 					printf("3 - Listar Alunos em Ordem Alfabética\n");
+					printf("4 - Listar Alunos por Data de Nascimento\n");
 					scanf("%d", &opcaoLista);
 					getchar();
 
@@ -184,18 +187,22 @@ void mainAluno(Aluno** inicioListaAluno, Disciplina** inicioListaDisciplina){
 							listarAlunoOrdenado(inicioListaAluno);
 							break;
 						}
+						case 4:{
+							listarAlunoPorData(inicioListaAluno);
+							break;
+						}
 						default:{
 							printf("Opção inválida!\n");
 						}
 					}
-				break;
-			}
+				}
+		 	 } 
+			 break;
 			default:{
 			printf("Opcao inválida\n");
 			}
-	  	}
+		}
 	}
-}
 }
 
 void inserirAlunoNaLista(Aluno** inicioAluno, Aluno* novoAluno){
@@ -484,6 +491,49 @@ void listarAlunoOrdenado(Aluno** inicioAluno) {
 	printf("-----\n\n");
 
     free(vetor);
+}
+
+void listarAlunoPorData(Aluno** inicioAluno){
+	if (*inicioAluno == NULL) {
+		printf("Lista Vazia\n");
+		return;
+	}
+
+	int contador = 0;
+	Aluno* atual = *inicioAluno;
+	while (atual != NULL) {
+		contador++;
+		atual = atual->prox;
+	}
+	Aluno** vetor = (Aluno**) malloc(contador * sizeof(Aluno*));
+	atual = *inicioAluno;
+	int i = 0;
+	while (atual != NULL) {
+		vetor[i] = atual;
+		i++;
+		atual = atual->prox;
+	}
+	for (int x = 0; x < contador - 1; x++) {
+		for (int y = x + 1; y < contador; y++) {
+			if (compararDatas(&vetor[x]->data_nascimento, &vetor[y]->data_nascimento) > 0) {
+				Aluno* temp = vetor[x];
+				vetor[x] = vetor[y];
+				vetor[y] = temp;
+			}
+		}
+	}
+		printf("\n### Alunos Cadastrados (Ordem por Data de Nascimento) ###\n");
+			for (int j = 0; j < contador; j++) {
+				printf("-----\n");
+				printf("Matrícula: %d\n", vetor[j]->matricula);
+				printf("Nome: %s\n", vetor[j]->nome);
+				printf("Sexo: %c\n", vetor[j]->sexo);
+				printf("Data Nascimento: %s\n", vetor[j]->data_nascimento.dataCompleta);
+				printf("CPF: %s\n", vetor[j]->cpf);
+			}
+		printf("-----\n\n");
+		
+free(vetor);
 }
 
 
