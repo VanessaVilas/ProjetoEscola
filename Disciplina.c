@@ -13,7 +13,6 @@ int atualizarDisciplina(Disciplina** inicioDisciplina, Professor** inicioListaPr
 int excluirDisciplina(Disciplina** inicioDisciplina);
 int matricularAluno(Disciplina** inicioDisciplina, Aluno** inicioListaAluno);
 void listarDisciplinas(Disciplina** inicioDisciplina, Aluno** inicioAluno, int opcao);
-void listarDisciplinasExtrapoladas(Disciplina** inicioDisciplina, Aluno** inicioAluno);
 int menuDisciplina();
 int menuListarDisciplina();
 
@@ -58,7 +57,7 @@ void mainListarDisciplina(Disciplina** inicioListaDisciplina, Professor** inicio
 				break;
 			}
 			case 3:{
-				listarDisciplinasExtrapoladas(inicioListaDisciplina, inicioListaAluno);
+				listarDisciplinas(inicioListaDisciplina, inicioListaAluno, opcao);
 				break;
 			}
 			default:{
@@ -465,44 +464,26 @@ void listarDisciplinas(Disciplina** inicioDisciplina, Aluno** inicioAluno, int o
     if(*inicioDisciplina == NULL){
         printf("Lista Vazia\n");
     }else{
-    	printf("\n### Disciplinas Cadastradas ####\n");
-        do{
-            printf("-----\n");
-            printf("Código: %d\n", DisciplinaAtual->codigo);
-            printf("Nome: %s\n", DisciplinaAtual->nome);
-            printf("Semestre: %d\n", DisciplinaAtual->semestre);
-            printf("Professor: %s\n", DisciplinaAtual->professor);
+		if(opcao == 1 || opcao==2 ||(opcao == 3 && DisciplinaAtual->qtdAlunos > 40)){
+			printf("\n### Disciplinas Cadastradas ####\n");
+			do{
+				printf("-----\n");
+				printf("Código: %d\n", DisciplinaAtual->codigo);
+				printf("Nome: %s\n", DisciplinaAtual->nome);
+				printf("Semestre: %d\n", DisciplinaAtual->semestre);
+				printf("Professor: %s\n", DisciplinaAtual->professor);
 
-			if(opcao == 2){
-				listarAlunosMatriculados(DisciplinaAtual, inicioAluno);
-			}
+				if(opcao == 2){
+					listarAlunosMatriculados(DisciplinaAtual, inicioAluno);
+				}
 
-            DisciplinaAtual = DisciplinaAtual->prox;
-        }while (DisciplinaAtual != NULL);
-		printf("-----\n\n");
+				DisciplinaAtual = DisciplinaAtual->prox;
+			}while (DisciplinaAtual != NULL);
+			printf("-----\n\n");
+		}else if(opcao == 3){
+			printf("Nenhuma disciplina extrapola 40 vagas.\n");
+		}
     }
-}
-
-void listarDisciplinasExtrapoladas(Disciplina** inicioDisciplina, Aluno** inicioAluno){
-    Disciplina* DisciplinaAtual = *inicioDisciplina;
-
-    if(*inicioDisciplina == NULL){
-        printf("Lista Vazia\n");
-    }else if(DisciplinaAtual->qtdAlunos > 40){
-    	printf("\n### Disciplinas Cadastradas ####\n");
-        do{
-            printf("-----\n");
-            printf("Código: %d\n", DisciplinaAtual->codigo);
-            printf("Nome: %s\n", DisciplinaAtual->nome);
-            printf("Semestre: %d\n", DisciplinaAtual->semestre);
-            printf("Professor: %s\n", DisciplinaAtual->professor);
-
-            DisciplinaAtual = DisciplinaAtual->prox;
-        }while (DisciplinaAtual != NULL);
-		printf("-----\n\n");
-    }else{
-		printf("Nenhuma disciplina extrapola 40 vagas.\n");
-	}
 }
 
 void liberarListaDisciplina(Disciplina* inicioDisciplina){
