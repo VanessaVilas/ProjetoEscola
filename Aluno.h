@@ -7,6 +7,8 @@ typedef struct dados_aluno{
   char sexo;
   Data data_nascimento;
   char cpf[15];
+  int codigoDisciplina[50];
+  int qtdDisciplinas;
   struct dados_aluno *prox;
 
 } Aluno;
