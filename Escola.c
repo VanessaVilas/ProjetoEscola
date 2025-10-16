@@ -1,5 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include <time.h>
 
 #include "Escola.h"
@@ -31,8 +33,6 @@ void finalizarEscola(Aluno* inicioAluno, Professor* inicioProfessor, Disciplina*
 	liberarListaProfessor(inicioProfessor);
 	liberarListaDisciplina(inicioDisciplina);
 }
-
-
 
 int main(){
 	Aluno aluno; 
@@ -84,6 +84,123 @@ int main(){
 	}
 }
 
+char *toLower(char *str, size_t len) {
+  char *str_l = calloc(len + 1, sizeof(char));
+
+  for (size_t i = 0; i < len; ++i) {
+    str_l[i] = tolower((unsigned char)str[i]);
+  }
+  return str_l;
+}
+
+void strToLower(char *str) {
+    for (int i = 0; str[i]; i++) {
+        str[i] = tolower((unsigned char)str[i]);
+    }
+}
+
+void listarNomes(Aluno** inicioAluno, Professor** inicioProfessor){
+	char letras[50];
+	printf("Digite no mínimo três letras: ");    
+    scanf("%s", letras);
+    getchar();
+	strToLower(letras);
+
+	Aluno* atualAluno = *inicioAluno;
+	Professor* atualProfessor = *inicioProfessor;
+	int achou = FALSE;
+
+	if(*inicioAluno == NULL && *inicioProfessor == NULL){
+        printf("Listas Vazias\n");
+	}else{
+		int contadorAluno = 0;
+
+		while(atualAluno != NULL){
+			char nomeAlunoMinusc[50];
+			strcpy(nomeAlunoMinusc, atualAluno->nome);
+			strToLower(nomeAlunoMinusc);
+
+			if(strstr(nomeAlunoMinusc, letras) != NULL){
+				contadorAluno++;
+			}
+			atualAluno = atualAluno->prox;
+		}
+
+		atualAluno = *inicioAluno;
+
+		if(contadorAluno == 0){
+			printf("\n### Alunos ####\n");
+			printf("-----\n");
+			printf("Não foi encontrado nenhum aluno com as letras digitadas.\n\n");
+		}else{
+			achou = TRUE;
+			
+			printf("\n### Alunos ####\n");
+			while(atualAluno != NULL){
+				char nomeAlunoMinusc[50];
+				strcpy(nomeAlunoMinusc, atualAluno->nome);
+				strToLower(nomeAlunoMinusc);
+
+				if(strstr(nomeAlunoMinusc, letras) != NULL){
+					printf("-----\n");
+					printf("Matrícula: %d\n", atualAluno->matricula);
+					printf("Nome: %s\n", atualAluno->nome);
+					printf("Sexo: %c\n", atualAluno->sexo);
+					printf("Data Nascimento: %s\n", atualAluno->data_nascimento.dataCompleta);
+					printf("CPF: %s\n", atualAluno->cpf);
+				}
+				atualAluno = atualAluno->prox;
+			}
+			printf("-----\n\n");
+		}
+
+		int contadorProfessor = 0;
+
+		while(atualProfessor != NULL){
+			char nomeProfMinusc[50];
+			strcpy(nomeProfMinusc, atualProfessor->nome);
+			strToLower(nomeProfMinusc);
+
+			if(strstr(nomeProfMinusc, letras) != NULL){
+				contadorProfessor++;
+			}
+			atualProfessor = atualProfessor->prox;
+		}
+
+		atualProfessor = *inicioProfessor;
+
+		if(contadorProfessor == 0){
+			printf("\n### Professores ####\n");
+			printf("-----\n");
+			printf("Não foi encontrado nenhum aluno com as letras digitadas.\n\n");
+		}else{
+			achou = TRUE;
+			
+			printf("\n### Professores ####\n");
+			while(atualProfessor != NULL){
+				char nomeProfMinusc[50];
+				strcpy(nomeProfMinusc, atualProfessor->nome);
+				strToLower(nomeProfMinusc);
+
+				if(strstr(nomeProfMinusc, letras) != NULL){
+					printf("-----\n");
+					printf("Matrícula: %d\n", atualProfessor->matricula);
+					printf("Nome: %s\n", atualProfessor->nome);
+					printf("Sexo: %c\n", atualProfessor->sexo);
+					printf("Data Nascimento: %s\n", atualProfessor->data_nascimento.dataCompleta);
+					printf("CPF: %s\n", atualProfessor->cpf);
+				}
+				atualProfessor = atualProfessor->prox;
+			}
+			printf("-----\n\n");
+		}
+
+		if(!achou){
+			printf("Não foi encontrado nenhum nome com as letras digitadas.\n");
+		}
+	}
+}
+
 void listarAniversariantes(Aluno** inicioAluno, Professor** inicioProfessor){
 	time_t t = time(NULL);
     struct tm dataAtual = *localtime(&t);
@@ -124,55 +241,6 @@ void listarAniversariantes(Aluno** inicioAluno, Professor** inicioProfessor){
 
 		if(!achou){
 			printf("Não tem nenhum aniversariante esse mês\n");
-		}
-	}
-}
-
-void listarNomes(Aluno** inicioAluno, Professor** inicioProfessor){
-	char letras[50];
-	printf("Digite no mínimo três letras: ");    
-    scanf("%s", letras);
-    getchar();
-
-	Aluno* atualAluno = *inicioAluno;
-	Professor* atualProfessor = *inicioProfessor;
-	int achou = FALSE;
-
-	if(*inicioAluno == NULL && *inicioProfessor == NULL){
-        printf("Listas Vazias\n");
-	}else{
-		while(atualAluno != NULL){
-			if(strstr(atualAluno->nome, letras) != NULL){
-				achou = TRUE;
-				
-				printf("-----\n");
-				printf("Matrícula Aluno: %d\n", atualAluno->matricula);
-				printf("Nome: %s\n", atualAluno->nome);
-				printf("Sexo: %c\n", atualAluno->sexo);
-				printf("Data Nascimento: %s\n", atualAluno->data_nascimento.dataCompleta);
-				printf("CPF: %s\n", atualAluno->cpf);
-			}
-			atualAluno = atualAluno->prox;
-		}
-
-		while(atualProfessor != NULL){
-			if(strstr(atualProfessor->nome, letras) != NULL){
-				achou = TRUE;
-				
-				printf("-----\n");
-				printf("Matrícula Professor: %d\n", atualProfessor->matricula);
-				printf("Nome: %s\n", atualProfessor->nome);
-				printf("Sexo: %c\n", atualProfessor->sexo);
-				printf("Data Nascimento: %s\n", atualProfessor->data_nascimento.dataCompleta);
-				printf("CPF: %s\n", atualProfessor->cpf);
-			}
-			atualProfessor = atualProfessor->prox;
-		}
-
-		if(!achou){
-			printf("Não foi encontrado nenhum nome com as letras digitadas.\n");
-		}else{
-			printf("-----\n\n");	
 		}
 	}
 }
