@@ -149,13 +149,13 @@ int validarCPF(char *cpf) {
     if (iguais)
         return 0;
 
-    for (i = 0, j = 10; i < 9; i++, j--)
-        primeiro_digito += numeros[i] * j;
+    for (i = 0, j = 10; i < 9; i++, j--) 
+    primeiro_digito += numeros[i] * j;
     primeiro_digito = (primeiro_digito * 10) % 11;
     if (primeiro_digito == 10) primeiro_digito = 0;
 
     for (i = 0, j = 11; i < 10; i++, j--)
-        segundo_digito += numeros[i] * j;
+    segundo_digito += numeros[i] * j;
     segundo_digito = (segundo_digito * 10) % 11;
     if (segundo_digito == 10) segundo_digito = 0;
 
