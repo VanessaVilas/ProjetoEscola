@@ -12,7 +12,7 @@ int inserirDisciplina(Disciplina** inicioDisciplina, Professor** inicioListaProf
 int atualizarDisciplina(Disciplina** inicioDisciplina, Professor** inicioListaProfessor);
 int excluirDisciplina(Disciplina** inicioDisciplina);
 int matricularAluno(Disciplina** inicioDisciplina, Aluno** inicioListaAluno);
-void listarDisciplinas(Disciplina** inicioDisciplina, Aluno** inicioAluno, int opcao);
+void listarDisciplinas(Disciplina** inicioDisciplina, Professor** inicioProfessor, Aluno** inicioAluno, int opcao);
 int menuDisciplina();
 int menuListarDisciplina();
 
@@ -49,15 +49,15 @@ void mainListarDisciplina(Disciplina** inicioListaDisciplina, Professor** inicio
 			break;
 			}
 			case 1:{
-				listarDisciplinas(inicioListaDisciplina, inicioListaAluno, opcao);
+				listarDisciplinas(inicioListaDisciplina, inicioListaProfessor, inicioListaAluno, opcao);
 				break;
 			}
 			case 2:{
-				listarDisciplinas(inicioListaDisciplina, inicioListaAluno, opcao);
+				listarDisciplinas(inicioListaDisciplina, inicioListaProfessor, inicioListaAluno, opcao);
 				break;
 			}
 			case 3:{
-				listarDisciplinas(inicioListaDisciplina, inicioListaAluno, opcao);
+				listarDisciplinas(inicioListaDisciplina, inicioListaProfessor, inicioListaAluno, opcao);
 				break;
 			}
 			default:{
@@ -240,7 +240,7 @@ int validarCadastroDisciplina(Disciplina* disciplina, Professor** inicioProfesso
 		}
 
 		if(achou){
-			strcpy(disciplina->professor, atual->nome);
+			disciplina->matriculaProfessor = atual->matricula;
 		}else
 			return ERRO_CADASTRO_PROFESSOR;
     }
@@ -308,7 +308,7 @@ int atualizarDisciplinaNaLista(Disciplina** inicioDisciplina, int codigo, Profes
 		if(retorno == SUCESSO_CADASTRO){
 			strcpy(atual->nome, tmp.nome);
         	atual->semestre = tmp.semestre;
-        	strcpy(atual->professor, tmp.professor);
+        	atual->matriculaProfessor = tmp.matriculaProfessor;
 		}
 
 		return retorno;
@@ -458,12 +458,23 @@ void listarAlunosMatriculados(Disciplina* DisciplinaAtual, Aluno** inicioAluno){
 	}
 }
 
-void listarDisciplinas(Disciplina** inicioDisciplina, Aluno** inicioAluno, int opcao){
+void listarDisciplinas(Disciplina** inicioDisciplina, Professor** inicioProfessor, Aluno** inicioAluno, int opcao){
     Disciplina* DisciplinaAtual = *inicioDisciplina;
 
     if(*inicioDisciplina == NULL){
         printf("Lista Vazia\n");
     }else{
+		Professor* ProfessorAtual = *inicioProfessor;
+		int achou = FALSE;
+
+		while(ProfessorAtual != NULL){
+			if(ProfessorAtual->matricula == DisciplinaAtual->matriculaProfessor){
+				achou = TRUE;
+				break;
+			}
+			ProfessorAtual = ProfessorAtual->prox;
+		}
+
 		if(opcao == 1 || opcao==2 ||(opcao == 3 && DisciplinaAtual->qtdAlunos > 40)){
 			printf("\n### Disciplinas Cadastradas ####\n");
 			do{
@@ -471,7 +482,7 @@ void listarDisciplinas(Disciplina** inicioDisciplina, Aluno** inicioAluno, int o
 				printf("Código: %d\n", DisciplinaAtual->codigo);
 				printf("Nome: %s\n", DisciplinaAtual->nome);
 				printf("Semestre: %d\n", DisciplinaAtual->semestre);
-				printf("Professor: %s\n", DisciplinaAtual->professor);
+				printf("Professor: %s\n", ProfessorAtual->nome);
 
 				if(opcao == 2){
 					listarAlunosMatriculados(DisciplinaAtual, inicioAluno);

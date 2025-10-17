@@ -62,7 +62,7 @@ int main(){
 	      	break;
 	      }
 	      case 2: {
-	      	mainProfessor(&inicioListaProfessor);
+	      	mainProfessor(&inicioListaProfessor, &inicioListaDisciplina);
 	      	break;
 	      }
 		  case 3: {

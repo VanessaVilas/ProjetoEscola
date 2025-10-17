@@ -9,6 +9,6 @@ typedef struct dados_professor{
 
 } Professor;
 
-void mainProfessor(Professor** inicio);
+void mainProfessor(Professor** inicio, Disciplina** inicioDisciplina);
 void liberarListaProfessor(Professor* inicio);
 int compararDatas(Data* data1, Data* data2);

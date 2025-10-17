@@ -4,11 +4,12 @@
 #include <ctype.h>
 
 #include "Escola.h"
+#include "Disciplina.h"
 #include "Professor.h"
 
 int inserirProfessor(Professor** inicioProfessor);
 int atualizarProfessor(Professor** inicioProfessor);
-int excluirProfessor(Professor** inicioProfessor);
+int excluirProfessor(Professor** inicioProfessor, Disciplina** inicioDisciplina);
 void listarProfessores(Professor** inicioProfessor);
 void listarProfessoresPorNome(Professor** inicioProfessor);
 void listarProfessoresPorSexo(Professor** inicioProfessor);
@@ -88,7 +89,7 @@ int menuProfessor(){
 	return opcao;
 }
 
-void mainProfessor(Professor** inicioListaProfessor){
+void mainProfessor(Professor** inicioListaProfessor, Disciplina** inicioListaDisciplina){
 	int opcao, retorno;
 	int sair = FALSE;
 
@@ -152,13 +153,17 @@ void mainProfessor(Professor** inicioListaProfessor){
 	      	break;
 		  }
 	      case 3:{
-	      	retorno = excluirProfessor(inicioListaProfessor);
+	      	retorno = excluirProfessor(inicioListaProfessor, inicioListaDisciplina);
 	      	if(retorno == SUCESSO_EXCLUSAO){ 
 	      		printf("Professor excluido com sucesso\n");
 	      	}else{
 	      		switch(retorno){
 	      			case LISTA_VAZIA:{
 	      				printf("Lista Vazia.\n");
+	      				break;
+	      			}
+					case PROFESSOR_MATRICULADO:{
+	      				printf("O professor com a matrícula digitada está cadastrado em uma disiciplina.\n");
 	      				break;
 	      			}
 					case NAO_ENCONTRADO:{
@@ -295,44 +300,59 @@ int atualizarProfessor(Professor** inicioProfessor){
 	return atualizarProfessorNaLista(inicioProfessor, matricula);
 }
 
-int excluirProfessorNaLista(Professor** inicioProfessor, int matricula){
+int excluirProfessorNaLista(Professor** inicioProfessor, Disciplina** inicioDisciplina, int matricula){
 	if(*inicioProfessor == NULL)
 		return LISTA_VAZIA;
 
-	Professor* anterior = *inicioProfessor;
-	Professor* atual = *inicioProfessor;
-	Professor* proximo = atual->prox;
+	Disciplina* atualDisciplina = *inicioDisciplina;
 	int achou = FALSE;
 
-	while(atual != NULL){
-		if(atual->matricula == matricula){
+	while(atualDisciplina != NULL){
+		if(atualDisciplina->matriculaProfessor == matricula){
 			achou = TRUE;
 			break;
 		}
-		anterior = atual;
-		atual = proximo;
-		if(atual != NULL)
-			proximo = atual->prox;
+		atualDisciplina = atualDisciplina->prox;
 	}
 
-	if(achou){
-		if(atual == *inicioProfessor)
-			*inicioProfessor = proximo;
-		else
-			anterior->prox = atual->prox;
-		free(atual);
-		return SUCESSO_EXCLUSAO;
-	}else
-		return NAO_ENCONTRADO;
+	if(!achou){
+		Professor* anterior = *inicioProfessor;
+		Professor* atual = *inicioProfessor;
+		Professor* proximo = atual->prox;
+		int achou = FALSE;
+
+		while(atual != NULL){
+			if(atual->matricula == matricula){
+				achou = TRUE;
+				break;
+			}
+			anterior = atual;
+			atual = proximo;
+			if(atual != NULL)
+				proximo = atual->prox;
+		}
+
+		if(achou){
+			if(atual == *inicioProfessor)
+				*inicioProfessor = proximo;
+			else
+				anterior->prox = atual->prox;
+			free(atual);
+			return SUCESSO_EXCLUSAO;
+		}else
+			return NAO_ENCONTRADO;
+	}else{
+		return PROFESSOR_MATRICULADO;
+	}
 }
 
-int excluirProfessor(Professor** inicioProfessor){
+int excluirProfessor(Professor** inicioProfessor, Disciplina** inicioDisciplina){
 	int matricula;
 	printf("Digite a matrícula: ");    
     scanf("%d", &matricula);
     getchar();
 
-	return excluirProfessorNaLista(inicioProfessor, matricula);
+	return excluirProfessorNaLista(inicioProfessor, inicioDisciplina, matricula);
 }
 
 void listarProfessores(Professor** inicioProfessor){
