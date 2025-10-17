@@ -116,6 +116,10 @@ void mainProfessor(Professor** inicioListaProfessor, Disciplina** inicioListaDis
 	      				printf("Data Inválida.\n");
 	      				break;
 	      			}
+					case ERRO_CPF_INVALIDO:{
+    					printf("CPF invalido. Digite novamente um CPF valido.\n");
+    					break;
+					}
 					default:{
 	      				printf("Erro desconhecido.\n");
 	      			}
@@ -145,6 +149,10 @@ void mainProfessor(Professor** inicioListaProfessor, Disciplina** inicioListaDis
 	      				printf("Não foi encontrado o professor com a matrícula digitado.\n");
 	      				break;
 	      			}
+					case ERRO_CPF_INVALIDO:{
+    					printf("CPF invalido. Digite novamente um CPF valido.\n");
+    					break;
+					}
 	      			default:{
 	      				printf("Erro desconhecido.\n");
 	      			}
@@ -217,7 +225,12 @@ int validarCadastroProfessor(Professor* professor){
 		    ln = strlen(professor->cpf) - 1; 
 		    if(professor->cpf[ln] == '\n')
 		        professor->cpf[ln] = '\0';
-	    }
+				if (!validarCPF(professor->cpf)) {
+					printf("CPF inválido!\n");
+					free(professor);
+					return ERRO_CPF_INVALIDO;
+	    	}
+    	}
     }
 	return retorno;
 }

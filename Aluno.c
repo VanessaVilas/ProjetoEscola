@@ -120,6 +120,10 @@ void mainAluno(Aluno** inicioListaAluno, Disciplina** inicioListaDisciplina){
 	      				printf("Data Inválida.\n");
 	      				break;
 	      			}
+					case ERRO_CPF_INVALIDO:{
+    					printf("CPF invalido. Digite novamente um CPF valido.\n");
+    					break;
+					}
 					default:{
 	      				printf("Erro desconhecido.\n");
 	      			}
@@ -149,6 +153,10 @@ void mainAluno(Aluno** inicioListaAluno, Disciplina** inicioListaDisciplina){
 	      				printf("Não foi encontrado o aluno com a matrícula digitado.\n");
 	      				break;
 	      			}
+					case ERRO_CPF_INVALIDO:{
+    					printf("CPF invalido. Digite novamente um CPF valido.\n");
+    					break;
+					}
 	      			default:{
 	      				printf("Erro desconhecido.\n");
 	      			}
@@ -218,9 +226,14 @@ int validarCadastroAluno(Aluno* aluno){
 		    ln = strlen(aluno->cpf) - 1; 
 		    if(aluno->cpf[ln] == '\n')
 		        aluno->cpf[ln] = '\0';
-	    }
-    }
+				if (!validarCPF(aluno->cpf)) {
+					printf("CPF inválido!\n");
+					free(aluno);
+					return ERRO_CPF_INVALIDO;
+	    	}
+    	}
 	return retorno;
+	}
 }
 
 void inserirAlunoNaLista(Aluno** inicioAluno, Aluno* novoAluno){

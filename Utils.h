@@ -7,3 +7,4 @@ typedef struct dma {
 
 
 int validar_data(char data[], Data *d);
+int validarCPF(char *cpf);
